@@ -5,8 +5,8 @@ set -x
 sdfasdhfaoe
 # set
 python3 -m venv env
-source env/bi
-pip install -e .
+bi
+pip install -e .nfn;qaweiahf
 npm ci .
-
+feqnewfl
 cwiasd
