@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+</head>
+
+<body>
+    <!-- webpage header -->
+    <h1>
+        <a href="/">Insta485</a>
+    </h1>
+    <p>
+        <a href="/explore/">Explore</a>
+        <a href="/users/{{ logname }}/">{{ logname }}</a>
+    </p>
+
+    <h1>
+        followers
+    </h1>
+    <!-- List the users that are followers -->
+    <!-- {% for user in followers %}
+        <p>
+            < img src="{{user.user_img_url}}" alt = 0 width="50" height="50">
+            <a href="/users/{{user.username}}/">{{user.username}}</a >
+            {% if user.logname_follows_username and user.username != logname %}
+            following
+            {% elif not user.logname_follows_username and user.username != logname%}
+            not following
+            {% endif %}
+        </p >
+        {% endfor %} -->
+    <!-- {% for p in pic %}
+            < img src="{{url_for('send_file', filename = p[0]['filename'])}}" alt="" width="50" height="50">
+        {% endfor %} -->
+
+    {% for l in dict %}
+    <a href="/users/{{l['username1']}}/">{{l['username1']}}</a>
+    <img src="{{url_for('send_file', filename = l['filename'])}}" alt="" width="50" height="50">
+    {% if l['following'] == 1 %}
+    following
+    <form action="{{ url_for('update_following',target=target) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" name="unfollow" value="unfollow" />
+        <input type="hidden" name="username" value="{{l['username1']}}" />
+        <input type="hidden" name="operation" value="unfollow" />
+    </form>
+    {% elif l['following'] == 0 %}
+    not following
+    <form action="{{ url_for('update_following', target=target) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" name="follow" value="follow" />
+        <input type="hidden" name="username" value="{{l['username1']}}" />
+        <input type="hidden" name="operation" value="follow" />
+    </form>
+    {% elif l['following'] == -1 %}
+    {% endif %}
+    {% endfor %}
+</body>
+
+</html>

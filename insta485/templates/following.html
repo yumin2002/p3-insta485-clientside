@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+</head>
+
+<body>
+    <!-- webpage header -->
+    <h1>
+        <a href="/">Insta485</a>
+    </h1>
+    <p>
+        <a href="/explore/">Explore</a>
+        <a href="/users/{{ logname }}/">{{ logname }}</a>
+    </p>
+    <h2>Following</h2>
+    <!-- List the users that are followers -->
+    <!-- {% for user in following %}
+        <p>
+            < img src="{{user.user_img_url}}" alt = img width="50" height="50">
+            <a href="/users/{{user.username2}}/">{{user.username2}}</a > -->
+    <!--relationship-->
+    <!-- {% if user.logname_follows_username and user.username != logname %}
+            following
+            {% elif not user.logname_follows_username and user.username != logname%}
+            not following
+            {% endif %} -->
+    <!-- </p >
+        {% endfor %} -->
+    {% for entry in dict %}
+    <a href="/users/{{entry['username2']}}/">{{entry['username2']}}</a>
+    <img src="{{url_for('send_file', filename = entry['filename'])}}" alt="" width="50" height="50">
+    {% if entry["following"] > 0 %}
+    following
+    <form action="{{ url_for('update_following', target=target) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" name="unfollow" value="unfollow" />
+        <input type="hidden" name="username" value="{{entry['username2']}}" />
+        <input type="hidden" name="operation" value="unfollow" />
+    </form>
+    {% elif entry["following"] == 0 %}
+    not following
+    <form action="{{ url_for('update_following', target=target) }}" method="post" enctype="multipart/form-data">
+        <input type="submit" name="follow" value="follow" />
+        <input type="hidden" name="username" value="{{entry['username2']}}" />
+        <input type="hidden" name="operation" value="follow" />
+    </form>
+    {% elif entry["following"] == -1 %}
+    {% endif %}
+    {% endfor %}
+
+
+</body>
+
+</html>

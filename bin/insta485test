@@ -1,0 +1,10 @@
+#!/bin/bash
+# stop on error and print all the commands
+set -Eeuo pipefail
+set -x
+
+# run tests
+pycodestyle insta485
+pydocstyle insta485
+pylint --disable=cyclic-import --unsafe-load-any-extension=y insta485
+pytest -v tests

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+</head>
+
+<body>
+    <!-- webpage header -->
+    <h1>
+        <a href="/">Insta485</a>
+    </h1>
+    <p>
+        <a href="/explore/">Explore</a>
+        <a href="/users/{{ logname }}/">{{ logname }}</a>
+    </p>
+
+    <!-- post information -->
+    <p>
+        <a href="/users/{{ post[0].owner }}/"><img src="{{ url_for('send_file', filename = pic_filename) }}" alt=0
+                width="40" height="40"></a>
+        <a href="/users/{{ post[0].owner }}/">{{ post[0].owner }}</a>
+        <a href="/posts/{{ post[0].postid }}/">{{ post[0].created }}</a>
+    </p>
+    <!-- post delete -->
+    {% if logname_own_post %}
+    <form action="{{ url_for('update_posts', target= '/') }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="operation" value="delete" />
+        <input type="hidden" name="postid" value="{{post[0].postid}}" />
+        <input type="submit" name="delete" value="delete this post" />
+    </form>
+    {% endif%}
+
+
+    <!-- post content: image -->
+    <p>
+        <img src="{{ url_for('send_file', filename = post[0].filename) }}" alt=0 width="400" height="400">
+    </p>
+
+    <!-- post likes -->
+    <span>{{ likes }}
+        {% if likes == 1 %}
+        like
+        {% else %}
+        likes
+        {% endif %}
+    </span>
+
+    <!-- post comments -->
+    {% for comment in comments %}
+    <p>
+        <a href="/users/{{ comment.owner }}/">{{ comment.owner }}</a>
+        {{ comment.text }}
+    </p>
+    <!-- comment delete -->
+    {% if comment.belong_to_logname %}
+    <form action="{{ url_for('update_comments', target= ('/posts/{}/'.format(post[0].postid))) }}" method="post"
+        enctype="multipart/form-data">
+        <input type="hidden" name="operation" value="delete" />
+        <input type="hidden" name="commentid" value="{{comment.commentid}}" />
+        <input type="submit" name="uncomment" value="delete" />
+    </form>
+    {% endif %}
+
+
+    {% endfor %}
+
+
+    <!-- like button -->
+
+    {% if liked %}
+    <form action="{{ url_for('update_likes', target= ('/posts/{}/'.format(post[0].postid))) }}" method="post"
+        enctype="multipart/form-data">
+        <input type="hidden" name="operation" value="unlike" />
+        <input type="hidden" name="postid" value="{{post[0].postid}}" />
+        <input type="submit" name="unlike" value="unlike" />
+    </form>
+    {% else %}
+    <form action="{{ url_for('update_likes', target= ('/posts/{}/'.format(post[0].postid))) }}" method="post"
+        enctype="multipart/form-data">
+        <input type="hidden" name="operation" value="like" />
+        <input type="hidden" name="postid" value="{{post[0].postid}}" />
+        <input type="submit" name="like" value="like" />
+    </form>
+    {% endif %}
+
+
+    <!-- comment button -->
+    <form action="{{ url_for('update_comments', target= ('/posts/{}/'.format(post[0].postid))) }}" method="post"
+        enctype="multipart/form-data">
+        <input type="hidden" name="operation" value="create" />
+        <input type="hidden" name="postid" value="{{post[0].postid}}" />
+        <input type="text" name="text" required />
+        <input type="submit" name="comment" value="comment" />
+    </form>
+
+
+</body>
+
+</html>

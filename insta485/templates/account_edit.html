@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>insta485</title>
+</head>
+
+<body>
+    <a href="/">Insta485</a>
+    <p><img src="{{ url_for('send_file', filename=pic_url) }}" alt="image"></p>
+    <p>{{ username }}</p>
+
+    <form action="/accounts/?target=/accounts/edit/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" />
+        <input type="text" name="fullname" value="{{fullname}}" required />
+        <input type="text" name="email" value="{{email}}" required />
+        <input type="submit" name="update" value="submit" />
+        <input type="hidden" name="operation" value="edit_account" />
+    </form>
+
+
+    <p><a href="/accounts/password/">reset password</a></p>
+    <p><a href="/accounts/delete/">delete account</a></p>
+</body>
+
+</html>

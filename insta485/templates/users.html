@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>insta485</title>
+</head>
+
+<body>
+	<!-- webpage header -->
+	<h1>
+		<a href="/">Insta485</a>
+	</h1>
+	<p>
+		<a href="/explore/">Explore</a>
+		<a href="/users/{{ logname }}/">{{ logname }}</a>
+	</p>
+
+	<!-- username -->
+	<p>{{ username }}</p>
+
+	<!-- Relationship -->
+
+
+
+	{% if logname_follows_username and logname != username %}
+	<p>following</p>
+	<form action="{{ url_for('update_following', target='/users/{}/'.format(username)) }}" method="post"
+		enctype="multipart/form-data">
+		<input type="submit" name="unfollow" value="unfollow" />
+		<input type="hidden" name="username" value="{{username}}" />
+		<input type="hidden" name="operation" value="unfollow" />
+	</form>
+	{% elif not logname_follows_username and logname != username %}
+	<p>not following</p>
+	<form action="{{ url_for('update_following', target='/users/{}/'.format(username)) }}" method="post"
+		enctype="multipart/form-data">
+		<input type="submit" name="follow" value="follow" />
+		<input type="hidden" name="username" value="{{username}}" />
+		<input type="hidden" name="operation" value="follow" />
+	</form>
+	{% endif %}
+
+
+	<!-- number of posts, followers, and following -->
+	<p>
+		{{ total_posts }}
+		{% if total_posts == 1 %}
+		post
+		{% else %}
+		posts
+		{% endif %}
+		<a href="/users/{{ username }}/followers/">
+			{{followers}}
+			{% if followers == 1 %}
+			follower
+			{% else %}
+			followers
+			{% endif %}
+		</a>
+		<a href="/users/{{ username }}/following/">{{following}} following</a>
+	</p>
+
+	<h1>{{ fullname }}</h1>
+	<p>
+		{% for post in posts %}
+		<a href="/posts/{{ post['postid'] }}/"><img src="{{url_for('send_file', filename = post['filename'])}}" alt=0
+				width="200" height="200"></a>
+		{% endfor %}
+	</p>
+	{% if username == logname %}
+	<a href="/accounts/edit/">Edit profile</a>
+	<!--logout-->
+	<form action="/accounts/logout/" method="post" enctype="multipart/form-data">
+		<input type="submit" name="logout" value="Logout" />
+	</form>
+	<!--upload-->
+	<form action="{{url_for('update_posts', target = ('/users/{}'.format(username)))}}" method="post"
+		enctype="multipart/form-data">
+		<input type="file" name="file" accept="image/*" required />
+		<input type="submit" name="create_post" value="upload new post" />
+		<input type="hidden" name="operation" value="create" />
+	</form>
+
+
+	{% endif %}
+</body>
+
+</html>
