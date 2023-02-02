@@ -4,6 +4,5 @@ set -x
 
 # set up commands
 python3 -m venv env
-pip install -r requirements.txt
 pip install -e .
 npm ci .
