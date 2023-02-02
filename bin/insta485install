@@ -2,6 +2,9 @@
 set -Eeuo pipefail
 set -x
 
+
+cseraewncrbhwaoe
+
 # set up commands
 python3 -m venv env
 npm ci .
