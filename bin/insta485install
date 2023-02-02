@@ -2,11 +2,10 @@
 set -Eeuo pipefail
 set -x
 
-
+sdfasdhfaoe
 # set up commands
 python3 -m venv env
 source env/bin/activate
-pip install -r requirements.txt
 pip install -e .
 npm ci .
 
