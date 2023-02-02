@@ -3,10 +3,8 @@ set -Eeuo pipefail
 set -x
 
 sdfasdhfaoe
-# set
-python3 -m venv env
+# setenv env
 bi
 pip install -e .nfn;qaweiahf
-npm ci .
-feqnewfl
-cwiasd
+npm ci .a
+cwi
