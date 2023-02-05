@@ -1,0 +1,17 @@
+#!/bin/bash
+#insta485test
+
+#Stop on errors and prints commands
+set -e
+set -x
+
+#Run all unit tests using
+python -m unittest discover --start-directory tests --verbose
+
+pycodestyle insta485
+
+pydocstyle insta485
+
+pylint --reports=n --disable=cyclic-import insta485
+
+./bin/insta485test-html

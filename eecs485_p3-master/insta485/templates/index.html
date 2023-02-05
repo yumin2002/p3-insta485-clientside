@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>insta485</title>
+</head>
+
+<body>
+  <!-- Plain old HTML and jinja2 nav bar goes here -->
+  <header>
+		<h1><a href="/">Insta485</a></h1>
+		<p>
+			<a href="/explore/">explore</a> | <a href="/u/{{ logname }}/">{{ logname }}</a>
+		</p>
+  </header>
+
+  <div id="reactEntry">
+	  Loading ...
+  </div>
+  <!-- Load JavaScript -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+
+</body>
+</html>
