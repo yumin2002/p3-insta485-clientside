@@ -261,24 +261,24 @@ def basic_auth():
 
 
 @insta485.app.route('/api/v1/comments/', methods=["POST"])
-def post_comment(): 
-  """update the comments on a post"""
+def post_comment():
+    """update the comments on a post"""
 
-  print("Entered post comment")
+    print("Entered post comment")
 
-  auth = basic_auth()
-  if 'username' not in flask.session and not auth:
-      flask.abort(403)
+    auth = basic_auth()
+    if 'username' not in flask.session and not auth:
+        flask.abort(403)
 
-  postid = flask.request.args.get('postid')  
-  comment_text = flask.request.json['text']
+    postid = flask.request.args.get('postid')
+    comment_text = flask.request.json['text']
 
-  if flask.request.authorization is not None:
-    logname = flask.request.authorization["username"]
-  else:
-    logname = flask.session["username"]
+    if flask.request.authorization is not None:
+        logname = flask.request.authorization["username"]
+    else:
+        logname = flask.session["username"]
 
-  connection = insta485.model.get_db()
+    connection = insta485.model.get_db()
 
   # insert the comment into db
   cur = connection.execute(
