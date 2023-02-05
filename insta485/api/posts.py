@@ -1,7 +1,7 @@
 """REST API for posts."""
-import hashlib
 import flask
 import insta485
+import insta485.views.accounts
 
 
 @insta485.app.route('/api/v1/')
@@ -20,7 +20,7 @@ def get_service():
 def get_posts():
     """Get the posts."""
     # authentication
-    auth = basic_auth()
+    auth = insta485.views.accounts.basic_auth()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
 
@@ -64,8 +64,7 @@ def get_posts():
 
     # set results: find the posts of current page
     cur = connection.execute(
-        "SELECT postid, filename, owner, created "
-        "FROM posts "
+        "SELECT postid, filename, owner, created FROM posts "
         "WHERE owner IN "
         "(SELECT username2 FROM following WHERE (username1 == ?)) "
         "OR (owner == ? ) "
@@ -116,7 +115,8 @@ def get_posts():
 def get_post(postid):
     """Get the posts."""
     # authentication
-    if 'username' not in flask.session and not basic_auth():
+    if 'username' not in flask.session \
+            and not insta485.views.accounts.basic_auth():
         flask.abort(403)
 
     # variables & set page and size
@@ -138,7 +138,7 @@ def get_post(postid):
         comment["lognameOwnsThis"] = (logname == comment["owner"])
         comment["ownerShowUrl"] = f'/users/{comment["owner"]}/'
         comment['url'] = f'/api/v1/comments/{comment["commentid"]}/'
-    comments_url = f"/api/v1/comments/?postid={postid}"
+    # comments_url = f"/api/v1/comments/?postid={postid}"
 
     cur = connection.execute(
         "SELECT created, filename, owner FROM posts "
@@ -153,7 +153,7 @@ def get_post(postid):
 
     # get post info
     created = post[0]["created"]
-    imgUrl = f'/uploads/{post[0]["filename"]}'
+    img_url = f'/uploads/{post[0]["filename"]}'
 
     # check likes
     cur = connection.execute(
@@ -161,18 +161,18 @@ def get_post(postid):
         "WHERE postid = ?",
         (postid, )
     )
-    numLikes = len(cur.fetchall())
+    num_likes = len(cur.fetchall())
     cur = connection.execute(
         "SELECT likeid FROM likes "
         "WHERE postid = ? AND owner = ?",
         (int(postid), logname, )
     )
-    lognameLike = cur.fetchall()
-    lognameLikesThis = False
+    logname_like = cur.fetchall()
+    logname_likes_this = False
     like_url = None
-    if len(lognameLike) != 0:
-        lognameLikesThis = True
-        like_url = f'/api/v1/likes/{lognameLike[0]["likeid"]}/'
+    if len(logname_like) != 0:
+        logname_likes_this = True
+        like_url = f'/api/v1/likes/{logname_like[0]["likeid"]}/'
 
     # owner info
     owner = post[0]["owner"]
@@ -181,63 +181,30 @@ def get_post(postid):
         "WHERE username = ?",
         (owner, )
     )
-    filename = cur.fetchall()[0]["filename"]
-    ownerImgUrl = f'/uploads/{filename}'
-    ownerShowUrl = f'/users/{owner}/'
-    postShowUrl = f'/posts/{postid}/'
-    postid = int(postid)
-    url = f'/api/v1/posts/{postid}/'
+    # filename = cur.fetchall()[0]["filename"]
+    # ownerImgUrl = f'/uploads/{filename}'
+    # ownerShowUrl = f'/users/{owner}/'
+    # postShowUrl = f'/posts/{postid}/'
+    # postid = int(postid)
+    # url = f'/api/v1/posts/{postid}/'
     context = {
         "comments": comments,
-        "comments_url": comments_url,
+        "comments_url": f"/api/v1/comments/?postid={postid}",
         "created": created,
-        "imgUrl": imgUrl,
+        "imgUrl": img_url,
         "likes": {
-            "lognameLikesThis": lognameLikesThis,
-            "numLikes": numLikes,
+            "lognameLikesThis": logname_likes_this,
+            "numLikes": num_likes,
             "url": like_url
         },
         "owner": owner,
-        "ownerImgUrl": ownerImgUrl,
-        "ownerShowUrl": ownerShowUrl,
-        "postShowUrl": postShowUrl,
-        "postid": postid,
-        "url": url
+        "ownerImgUrl": f'/uploads/{cur.fetchall()[0]["filename"]}',
+        "ownerShowUrl": f'/users/{owner}/',
+        "postShowUrl": f'/posts/{postid}/',
+        "postid": int(postid),
+        "url": f'/api/v1/posts/{postid}/'
     }
     return flask.jsonify(**context)
-
-
-def basic_auth():
-    """Authenticate."""
-    if flask.request.authorization is None:
-        return False
-
-    connection = insta485.model.get_db()
-    username = flask.request.authorization['username']
-    password = flask.request.authorization['password']
-    cur = connection.execute(
-        "SELECT username, password "
-        "FROM users "
-        "WHERE username == ? ",
-        (username, )
-    )
-    # If username and password authentication fails.
-    rows = cur.fetchall()
-    if len(rows) == 0:
-        return False
-    # password match
-    # get hashed password
-    algorithm = 'sha512'
-    database_password = rows[0]['password']
-    salt = database_password.split("$")[1]
-    hash_obj = hashlib.new(algorithm)
-    password_salted = salt + password
-    hash_obj.update(password_salted.encode('utf-8'))
-    password_hash = hash_obj.hexdigest()
-    password_db_string = "$".join([algorithm, salt, password_hash])
-    if database_password != password_db_string:
-        return False
-    return True
 
 
 @insta485.app.route('/api/v1/comments/', methods=["POST"])
@@ -245,7 +212,7 @@ def post_comment():
     """Update the comments on a post."""
     print("Entered post comment")
 
-    auth = basic_auth()
+    auth = insta485.views.accounts.basic_auth()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
 
@@ -288,7 +255,7 @@ def delete_comment(commentid):
     """Update the comments on a post."""
     print("entered delete comment")
 
-    auth = basic_auth()
+    auth = insta485.views.accounts.basic_auth()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
 
