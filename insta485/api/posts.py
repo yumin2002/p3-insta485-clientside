@@ -304,14 +304,15 @@ def post_comment():
   return flask.jsonify(**context),201
 
 
-@insta485.app.route('/api/v1/comments/', methods = ["DELETE"])
-def delete_comment(): 
+@insta485.app.route('/api/v1/comments/<commentid>/', methods = ["DELETE"])
+def delete_comment(commentid): 
   """update the comments on a post"""
   print("entered delete comment")
+
   auth = basic_auth()
   if 'username' not in flask.session and not auth:
       flask.abort(403)
-  commentid = request.args.get('commentid')  
+
 
   if flask.request.authorization is not None:
     logname = flask.request.authorization["username"]
@@ -327,9 +328,9 @@ def delete_comment():
   comment_to_delete = cur.fetchall()
   # If the commentid does not exist, return 404.
   if len(comment_to_delete) == 0: 
-     flask.abort(404)
+    flask.abort(404)
 # If the user doesn’t own the comment, return 403.
-  if commenr_to_delete['owner'] != logname: 
+  if comment_to_delete[0]['owner'] != logname: 
     flask.abort(403)
 
    # delete the comment from db
@@ -338,6 +339,5 @@ def delete_comment():
       (commentid, )
     )
 
-  return flask.make_response(204)
-
+  return "", 204
   
