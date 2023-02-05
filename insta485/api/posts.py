@@ -1,7 +1,7 @@
 """REST API for posts."""
+import hashlib
 import flask
 import insta485
-import hashlib
 
 
 @insta485.app.route('/api/v1/')
@@ -18,15 +18,10 @@ def get_service():
 
 @insta485.app.route('/api/v1/posts/')
 def get_posts():
-    "Get the posts."
+    """Get the posts."""
     # authentication
     auth = basic_auth()
     if 'username' not in flask.session and not auth:
-        # context = {
-        #     "message": "Forbidden",
-        #     "status_code": 403
-        # }
-        # return flask.jsonify(**context)
         flask.abort(403)
 
     # variables & set page and size
@@ -65,11 +60,6 @@ def get_posts():
 
     # Bad request for invalid parameter
     if (size < 0) or (page < 0) or (postid_lte < 0):
-        # context = {
-        #     "message": "Bad Request",
-        #     "status_code": 400
-        # }
-        # return flask.jsonify(**context)
         flask.abort(400)
 
     # set results: find the posts of current page
@@ -96,7 +86,7 @@ def get_posts():
     # if all result can be displayed in current page
     # then no next page
     # otherwise, has next page
-    next = ''
+    next_url = ''
     cur = connection.execute(
         "SELECT postid FROM posts "
         "WHERE owner IN "
@@ -108,13 +98,14 @@ def get_posts():
     )
     total_posts = len(cur.fetchall())
     if total_posts < size*(page+1):
-        next = ''
+        next_url = ''
     else:
-        next = f"/api/v1/posts/?size={size}&page={page+1}&postid_lte={postid_lte}"
+        next_url = \
+            f"/api/v1/posts/?size={size}&page={page+1}&postid_lte={postid_lte}"
 
     # return
     context = {
-        "next": next,
+        "next": next_url,
         "results": result,
         "url": url
     }
@@ -123,15 +114,9 @@ def get_posts():
 
 @insta485.app.route('/api/v1/posts/<postid>/')
 def get_post(postid):
-    "Get the posts."
+    """Get the posts."""
     # authentication
-    auth = basic_auth()
-    if 'username' not in flask.session and not auth:
-        # context = {
-        #     "message": "Forbidden",
-        #     "status_code": 403
-        # }
-        # return flask.jsonify(**context)
+    if 'username' not in flask.session and not basic_auth():
         flask.abort(403)
 
     # variables & set page and size
@@ -164,11 +149,6 @@ def get_post(postid):
 
     # error: post does not exist
     if len(post) == 0:
-        # context = {
-        #     "message": "Not Found",
-        #     "status_code": 404
-        # }
-        # return flask.jsonify(**context)
         flask.abort(404)
 
     # get post info
@@ -228,7 +208,7 @@ def get_post(postid):
 
 
 def basic_auth():
-    """Basic Authentication."""
+    """Authenticate."""
     if flask.request.authorization is None:
         return False
 
@@ -262,8 +242,7 @@ def basic_auth():
 
 @insta485.app.route('/api/v1/comments/', methods=["POST"])
 def post_comment():
-    """update the comments on a post"""
-
+    """Update the comments on a post."""
     print("Entered post comment")
 
     auth = basic_auth()
@@ -280,64 +259,62 @@ def post_comment():
 
     connection = insta485.model.get_db()
 
-  # insert the comment into db
-  cur = connection.execute(
-    "INSERT INTO comments (owner, postid, text) VALUES (?, ?, ?) ",
-    (logname, postid, comment_text)
-  )
-  
-  # retrieve the comment for the json
-  cur = connection.execute (
-    "SELECT last_insert_rowid() FROM comments "
-  )
-  commentid = cur.fetchall()[0]["last_insert_rowid()"]
-  # need to check if logname owns?
-  context = {
-    "commentid": commentid,
-      "lognameOwnsThis": True,
-      "owner": "awdeorio",
-      "ownerShowUrl": f"/users/{logname}/",
-      "text": comment_text,
-      "url": f"/api/v1/comments/{postid}/"
-  }
-
-  return flask.jsonify(**context),201
-
-
-@insta485.app.route('/api/v1/comments/<commentid>/', methods = ["DELETE"])
-def delete_comment(commentid): 
-  """update the comments on a post"""
-  print("entered delete comment")
-
-  auth = basic_auth()
-  if 'username' not in flask.session and not auth:
-      flask.abort(403)
-
-
-  if flask.request.authorization is not None:
-    logname = flask.request.authorization["username"]
-  else:
-    logname = flask.session["username"]
-
-  connection = insta485.model.get_db()
-
-  cur = connection.execute(
-    "SELECT owner, commentid FROM comments WHERE commentid == ? ",
-    (commentid, )
-  )
-  comment_to_delete = cur.fetchall()
-  # If the commentid does not exist, return 404.
-  if len(comment_to_delete) == 0: 
-    flask.abort(404)
-# If the user doesn’t own the comment, return 403.
-  if comment_to_delete[0]['owner'] != logname: 
-    flask.abort(403)
-
-   # delete the comment from db
-  cur = connection.execute(
-      "DELETE FROM comments WHERE commentid == ? ",
-      (commentid, )
+    # insert the comment into db
+    cur = connection.execute(
+        "INSERT INTO comments (owner, postid, text) VALUES (?, ?, ?) ",
+        (logname, postid, comment_text)
     )
 
-  return "", 204
-  
+    # retrieve the comment for the json
+    cur = connection.execute(
+        "SELECT last_insert_rowid() FROM comments "
+    )
+    commentid = cur.fetchall()[0]["last_insert_rowid()"]
+    # need to check if logname owns?
+    context = {
+        "commentid": commentid,
+        "lognameOwnsThis": True,
+        "owner": "awdeorio",
+        "ownerShowUrl": f"/users/{logname}/",
+        "text": comment_text,
+        "url": f"/api/v1/comments/{postid}/"
+    }
+
+    return flask.jsonify(**context), 201
+
+
+@insta485.app.route('/api/v1/comments/<commentid>/', methods=["DELETE"])
+def delete_comment(commentid):
+    """Update the comments on a post."""
+    print("entered delete comment")
+
+    auth = basic_auth()
+    if 'username' not in flask.session and not auth:
+        flask.abort(403)
+
+    if flask.request.authorization is not None:
+        logname = flask.request.authorization["username"]
+    else:
+        logname = flask.session["username"]
+
+    connection = insta485.model.get_db()
+
+    cur = connection.execute(
+        "SELECT owner, commentid FROM comments WHERE commentid == ? ",
+        (commentid, )
+    )
+    comment_to_delete = cur.fetchall()
+    # If the commentid does not exist, return 404.
+    if len(comment_to_delete) == 0:
+        flask.abort(404)
+    # If the user doesn’t own the comment, return 403.
+    if comment_to_delete[0]['owner'] != logname:
+        flask.abort(403)
+
+    # delete the comment from db
+    cur = connection.execute(
+        "DELETE FROM comments WHERE commentid == ? ",
+        (commentid, )
+    )
+
+    return "", 204
