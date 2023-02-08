@@ -19,7 +19,7 @@ def get_service():
 @insta485.app.route('/api/v1/posts/')
 def get_posts():
     """Get the posts."""
-    # authentication
+    # authenticatisouon
     auth = insta485.views.accounts.basic_auth()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
@@ -218,13 +218,11 @@ def post_comment():
 
     postid = flask.request.args.get('postid')
     comment_text = flask.request.json['text']
-
+    connection = insta485.model.get_db()
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     else:
         logname = flask.session["username"]
-
-    connection = insta485.model.get_db()
 
     # insert the comment into db
     cur = connection.execute(
@@ -256,15 +254,13 @@ def delete_comment(commentid):
     print("entered delete comment")
 
     auth = insta485.views.accounts.basic_auth()
+    connection = insta485.model.get_db()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
-
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     else:
         logname = flask.session["username"]
-
-    connection = insta485.model.get_db()
 
     cur = connection.execute(
         "SELECT owner, commentid FROM comments WHERE commentid == ? ",
