@@ -22,30 +22,30 @@ export default function Post({ url }) {
         return response.json();
       })
       .then((data) => {
-        console.log(data)
         console.log("inner url")
-        console.log(data['results'][0]['url'])
         const listImg = []
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
-          for (let i = 0; i < data.length; i++) {
-            fetch(data['results'][0]['url'])
+          for (let i = 0; i < data['results'].length; i++) {
+
+            fetch(data['results'][i]['url'])
 
               .then((response) => {
                 if (!response.ok) throw Error(response.statusText);
                 return response.json();
               })
               .then((data1) => {
-                console.log(data1)
-                setImgUrl(data1["imgUrl"])
-                setOwner('liwq')
-
+                console.log(data1["imgUrl"])
+                listImg.push(data1["imgUrl"])
               })
-
-
-
+              .then((listImg) => {
+                console.log(data1["imgUrl"])
+                listImg.push(data1["imgUrl"])
+              })
           }
+          console.log("end for loop")
+          setImgUrl(...listImg)
         }
       })
       .catch((error) => console.log(error));
