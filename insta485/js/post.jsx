@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 // url is a prop for the Post component.
 export default function Post({ url }) {
   /* Display image and post owner of a single post */
-
+  console.log(url)
+  console.log("debug")
   const [imgUrl, setImgUrl] = useState("");
   const [owner, setOwner] = useState("");
 
@@ -15,16 +16,36 @@ export default function Post({ url }) {
 
     // Call REST API to get the post's information
     fetch(url, { credentials: "same-origin" })
+
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
       })
       .then((data) => {
+        console.log(data)
+        console.log("inner url")
+        console.log(data['results'][0]['url'])
+        const listImg = []
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
-          setImgUrl(data.imgUrl);
-          setOwner(data.owner);
+          for (let i = 0; i < data.length; i++) {
+            fetch(data['results'][0]['url'])
+
+              .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                return response.json();
+              })
+              .then((data1) => {
+                console.log(data1)
+                setImgUrl(data1["imgUrl"])
+                setOwner('liwq')
+
+              })
+
+
+
+          }
         }
       })
       .catch((error) => console.log(error));
