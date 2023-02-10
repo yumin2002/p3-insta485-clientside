@@ -56,8 +56,6 @@ def get_posts():
     postid_lte = flask.request.args.get(
         "postid_lte", default=default_postid[0]["postid"], type=int)
 
-    print(postid_lte)
-
     # Bad request for invalid parameter
     if (size < 0) or (page < 0) or (postid_lte < 0):
         flask.abort(400)
