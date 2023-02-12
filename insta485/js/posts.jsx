@@ -1,7 +1,6 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PropTypes from "prop-types";
-// import Post from "./post";
 
 class Posts extends React.Component {
   constructor() {
