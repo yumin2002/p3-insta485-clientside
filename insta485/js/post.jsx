@@ -36,15 +36,14 @@ export default function Post({ url }) {
         setOwner(data['owner'])
         setOwnerImg(data['ownerImgUrl'])
         setNumlikes(data['likes']['numLikes'])
-        setTime(moment.utc(data['created']))
+        setTime(moment.utc(data['created']).fromNow())
         if (data['likes']['lognameLikesThis']) {
           setlikeButton("unlike")
         } else {
           setlikeButton('like')
         }
-        var day = moment("")
-        console.log(moment.utc(data['created']))
-        console.log(moment.utc(data['created']).fromNow())
+
+
       }
 
     }
