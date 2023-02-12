@@ -1,8 +1,6 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import PropTypes from "prop-types";
-
-class Posts extends React.Component {
+class App extends React.Component {
   constructor() {
     super();
     this.state = {
