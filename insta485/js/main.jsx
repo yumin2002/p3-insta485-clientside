@@ -5,6 +5,6 @@ import App from "./app";
 // Create a root
 const root = createRoot(document.getElementById("reactEntry"));
 
-// This method is only called once
+// This method is only called onc
 // Insert the post component into the DOM
 root.render(<App />);
