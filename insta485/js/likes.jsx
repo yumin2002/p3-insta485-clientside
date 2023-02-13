@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
 const updateLikes = () => {
     const [numlikes, setNumLikes] = useState(0);
     const [lognamelikedthis, setLognamenameLikedThis] = useState(false);
     const [likeid, setLikeid] = useState(0);
     const [postid, setPostid] = useState(0);
     post_url = url = '/api/v1/posts/'.concat(postid.toString());
+    console.log(post_url)
     useEffect(() => {
         fetch(post_url)
             .then((response) => {
@@ -60,7 +62,7 @@ const updateLikes = () => {
         return (
             <div className="likes">
                 <p>{numlikes} likes</p>
-                <button onclick="updateLikes()" className="like-unlike-button">
+                <button onclick={updateLikes} className="like-unlike-button">
                     like
                 </button>
             </div>
