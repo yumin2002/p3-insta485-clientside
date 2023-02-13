@@ -42,9 +42,9 @@ export default function Post({ url }) {
           setImgUrl(data["imgUrl"]);
           setOwner(data["owner"]);
           setOwnerImg(data["ownerImgUrl"]);
-          setlikeurl(data["likes"]["url"])
-          setNumlikes(data["likes"]["numLikes"])
-          setloglikes(data["likes"]["lognameLikesThis"])
+          setlikeurl(data["likes"]["url"]);
+          setNumlikes(data["likes"]["numLikes"]);
+          setloglikes(data["likes"]["lognameLikesThis"]);
           setTime(moment.utc(data["created"]).fromNow());
           setPostUrl(data["url"]);
         }
@@ -65,10 +65,6 @@ export default function Post({ url }) {
   //if not liked, like url will be null
 
   var likeid;
-
-
-  console.log(postUrl);
-  console.log(postid);
   let m;
   let like_url;
   if (loglikes) {
@@ -76,14 +72,14 @@ export default function Post({ url }) {
     likeid = likeurl.replace("/api/v1/likes/", "");
     likeid = likeid.replace("/", "");
     like_url = "/api/v1/likes/".concat(likeid.toString()) + "/";
+  } else {
+    m = "POST";
+    like_url = "/api/v1/likes/?postid=".concat(postid.toString());
   }
-  else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
-  console.log(like_url)
 
   const addLikes = (event) => {
     let ignoreStaleRequest = false;
-    fetch(like_url,
-      { credentials: "same-origin", method: m })
+    fetch(like_url, { credentials: "same-origin", method: m })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -98,16 +94,16 @@ export default function Post({ url }) {
     setNumlikes(numLikes + 1);
     setloglikes(!loglikes);
     setButtonText("unlike");
-
-  }
+  };
   const deleteLikes = (event) => {
     let ignoreStaleRequest = false;
-    fetch(like_url,
-      {
-        credentials: "same-origin", method: m, headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    fetch(like_url, {
+      credentials: "same-origin",
+      method: m,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         // return response.json();
@@ -122,16 +118,73 @@ export default function Post({ url }) {
     setNumlikes(numLikes - 1);
     setloglikes(!loglikes);
     setButtonText("like");
-  }
+  };
 
   const handleclick = () => {
     if (loglikes) {
-      deleteLikes()
+      deleteLikes();
+    } else {
+      addLikes();
     }
-    else {
-      addLikes()
-    }
+  };
 
+  function handleDelete(event) {
+    var id_to_delete = event.target.id;
+    var url_delete = "/api/v1/comments/" + id_to_delete + "/";
+    event.preventDefault();
+    let ignoreStaleRequest = false;
+    fetch(url_delete, {
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+      })
+      .catch((error) => console.log(error));
+
+    if (!ignoreStaleRequest) {
+      var deleteComment = comments.map((comment) => {
+        return comment;
+      });
+      for (let i = 0; i < deleteComment.length; i++) {
+        if (deleteComment[i]["commentid"] == 1.0 * id_to_delete) {
+          deleteComment.splice(i, 1);
+        }
+      }
+      setComments([...deleteComment]);
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // get a url
+    var postid = postUrl.replace("/api/v1/posts/", "");
+    postid = postid.replace("/", "");
+    var commentUrl = "/api/v1/comments/?postid=" + postid;
+
+    let ignoreStaleRequest = false;
+    fetch(commentUrl, {
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ text: document.getElementById("input").value }),
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+        if (!ignoreStaleRequest) {
+          setComments([...comments, ...[data]]);
+          document.getElementById("input").value = "";
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   // Render post image and post owner
@@ -141,8 +194,19 @@ export default function Post({ url }) {
       <p>{timeStamp}</p>
       <img src={ownerImgUrl} alt="owner_image" />
       <img src={imgUrl} alt="post_image" />
-      <UpdateLikes btext={likeButtonText} num={numLikes} likeUrl={likeurl} lognamelikesthis={loglikes} post_url={postUrl} clickhandler={handleclick} />
-      <Comments url={postUrl} comments={comments} />
+      <UpdateLikes
+        btext={likeButtonText}
+        num={numLikes}
+        likeUrl={likeurl}
+        lognamelikesthis={loglikes}
+        post_url={postUrl}
+        clickhandler={handleclick}
+      />
+      <Comments
+        handleDelete={handleDelete}
+        handleSubmit={handleSubmit}
+        comments={comments}
+      />
     </div>
   );
 }
