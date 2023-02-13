@@ -7,6 +7,9 @@ import UpdateLikes from "./likes";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Post({ url }) {
+  // var like_id_num = 
+  // like_id = likeurl.replace("/api/v1/likes/", "");
+  //   like_id = like_id.replace("/", "");
   /* Display image and post owner of a single post */
   const [imgUrl, setImgUrl] = useState("");
   const [owner, setOwner] = useState("");
@@ -18,7 +21,7 @@ export default function Post({ url }) {
   const [comments, setComments] = useState([]);
   const [postUrl, setPostUrl] = useState("");
   const [likeButtonText, setButtonText] = useState("button");
-
+  const [likeid, setLikeid] = useState(0);
   useEffect(() => {
     // Declare a boolean flag that we can use to cancel the API request.
     let ignoreStaleRequest = false;
@@ -47,6 +50,15 @@ export default function Post({ url }) {
           setloglikes(data["likes"]["lognameLikesThis"])
           setTime(moment.utc(data["created"]).fromNow());
           setPostUrl(data["url"]);
+          //get likeid
+          like_id = likeurl.replace("/api/v1/likes/", "");
+          like_id = like_id.replace("/", "");
+          setLikeid(Number(like_id))
+          if (loglikes) {
+            setButtonText("unlike")
+          } else {
+            setButtonText("like")
+          }
         }
       })
       .catch((error) => console.log(error));
@@ -64,26 +76,26 @@ export default function Post({ url }) {
   //post_url = "/api/v1/comments/?postid=" + postid;
   //if not liked, like url will be null
 
-  var likeid;
+  var like_id;
 
 
   console.log(postUrl);
   console.log(postid);
   let m;
   let like_url;
-  if (loglikes) {
-    m = "DELETE";
-    likeid = likeurl.replace("/api/v1/likes/", "");
-    likeid = likeid.replace("/", "");
-    like_url = "/api/v1/likes/".concat(likeid.toString()) + "/";
-  }
-  else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
+  // if (loglikes) {
+  //   m = "DELETE";
+
+  // }
+  // else { m = "POST"; }
   console.log(like_url)
 
   const addLikes = (event) => {
     let ignoreStaleRequest = false;
+
+    like_url = "/api/v1/likes/?postid=".concat(postid.toString());
     fetch(like_url,
-      { credentials: "same-origin", method: m })
+      { credentials: "same-origin", method: "POST" })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -92,6 +104,8 @@ export default function Post({ url }) {
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
+          setLikeid(data["likeid"]);
+          // like_id = data['likeid']
         }
       })
       .catch((error) => console.log(error));
@@ -102,9 +116,14 @@ export default function Post({ url }) {
   }
   const deleteLikes = (event) => {
     let ignoreStaleRequest = false;
+    // like_id = likeurl.replace("/api/v1/likes/", "");
+    // like_id = like_id.replace("/", "");
+    // console.log(Number(like_id));
+    // setLikeid(Number(like_id));
+    like_url = "/api/v1/likes/".concat(likeid.toString()) + "/";
     fetch(like_url,
       {
-        credentials: "same-origin", method: m, headers: {
+        credentials: "same-origin", method: "DELETE", headers: {
           "Content-Type": "application/json",
         },
       })
@@ -116,6 +135,7 @@ export default function Post({ url }) {
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
+
         }
       })
       .catch((error) => console.log(error));

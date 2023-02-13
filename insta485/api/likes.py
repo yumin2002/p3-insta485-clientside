@@ -7,19 +7,20 @@ from insta485.views.accounts import basic_auth
 @insta485.app.route('/api/v1/likes/', methods=["POST"])
 def post_like():
     """Post likes."""
+    print("in post like")
     auth = basic_auth()
     if not auth and 'username' not in flask.session:
-        print("1")
+        print("exit1")
         flask.abort(403)
     # get logname
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
-    elif flask.request.authorization is None:
-        print("1")
-        flask.abort(403)
+    # elif flask.request.authorization is None:
+    #     print("exit2")
+    #     flask.abort(403)
     else:
         logname = flask.session["username"]
-
+    print("exit3")
     postid = int(flask.request.args.get('postid'))
 
     connection = insta485.model.get_db()
