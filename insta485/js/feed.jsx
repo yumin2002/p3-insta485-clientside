@@ -15,19 +15,9 @@ export default function Feed({ url }) {
     "/api/v1/posts/1/",
     "/api/v1/posts/1/",
   ]);
-  //   useEffect(() => {
-  //     setPostsUrls([
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //     ]);
-  //   });
+
   function fetchData() {
-    setPostsUrls([...postsUrls, ["/api/v1/posts/1/"]]);
+    setPostsUrls([...postsUrls, "/api/v1/posts/1/"]);
     console.log(postsUrls);
   }
 

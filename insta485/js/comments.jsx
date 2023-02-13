@@ -21,11 +21,9 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
           </div>
         );
       })}
-      <form id="comment-form">
-        <input id="input" type="text" />
-        <button id="submit" onClick={handleSubmit}>
-          comment
-        </button>
+      <form onSubmit={handleSubmit}>
+        <input type="text" />
+        <input type="submit" />
       </form>
     </div>
   );
