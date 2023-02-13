@@ -56,8 +56,6 @@ def get_posts():
     postid_lte = flask.request.args.get(
         "postid_lte", default=default_postid[0]["postid"], type=int)
 
-    print(postid_lte)
-
     # Bad request for invalid parameter
     if (size < 0) or (page < 0) or (postid_lte < 0):
         flask.abort(400)
@@ -215,21 +213,24 @@ def post_comment():
     auth = insta485.views.accounts.basic_auth()
     if 'username' not in flask.session and not auth:
         flask.abort(403)
-
+    print("Entered post comment1")
     postid = flask.request.args.get('postid')
+    
     comment_text = flask.request.json['text']
+    print("Entered post comment2")
     connection = insta485.model.get_db()
+    
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     else:
         logname = flask.session["username"]
-
+    
     # insert the comment into db
     cur = connection.execute(
         "INSERT INTO comments (owner, postid, text) VALUES (?, ?, ?) ",
         (logname, postid, comment_text)
     )
-
+    
     # retrieve the comment for the json
     cur = connection.execute(
         "SELECT last_insert_rowid() FROM comments "
@@ -244,7 +245,7 @@ def post_comment():
         "text": comment_text,
         "url": f"/api/v1/comments/{postid}/"
     }
-
+    print("Entered post comment3")
     return flask.jsonify(**context), 201
 
 

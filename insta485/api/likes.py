@@ -97,36 +97,3 @@ def delete_like(likeid):
 
     # If the likeid does not exist, return 404.
     return "", 404
-
-
-# def basic_auth():
-#     """Check basic Authentication."""
-#     if flask.request.authorization is None:
-#         return False
-
-#     connection = insta485.model.get_db()
-#     username = flask.request.authorization['username']
-#     password = flask.request.authorization['password']
-#     cur = connection.execute(
-#         "SELECT username, password "
-#         "FROM users "
-#         "WHERE username == ? ",
-#         (username, )
-#     )
-#     # If username and password authentication fails.
-#     rows = cur.fetchall()
-#     if len(rows) == 0:
-#         return False
-#     # password match
-#     # get hashed password
-#     algorithm = 'sha512'
-#     database_password = rows[0]['password']
-#     salt = database_password.split("$")[1]
-#     hash_obj = hashlib.new(algorithm)
-#     password_salted = salt + password
-#     hash_obj.update(password_salted.encode('utf-8'))
-#     password_hash = hash_obj.hexdigest()
-#     password_db_string = "$".join([algorithm, salt, password_hash])
-#     if database_password != password_db_string:
-#         return False
-#     return True

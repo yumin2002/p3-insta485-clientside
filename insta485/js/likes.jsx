@@ -1,75 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
-const updateLikes = () => {
+export default function UpdateLikes({ likes }) {
     const [numlikes, setNumLikes] = useState(0);
     const [lognamelikedthis, setLognamenameLikedThis] = useState(false);
-    const [likeid, setLikeid] = useState(0);
-    const [postid, setPostid] = useState(0);
-    post_url = url = '/api/v1/posts/'.concat(postid.toString());
+    const [buttontext, setButtonText] = useState('like');
+    // const [likeid, setLikeid] = useState(0);
+    // const [postid, setPostid] = useState(0);
+    post_url = '/api/v1/posts/'.concat(postid.toString());
     console.log(post_url)
-    useEffect(() => {
-        fetch(post_url)
+
+    if (likes['lognameLikesThis']) {
+        m = "DELETE";
+        like_url = "/api/v1/likes/".concat(likeid.toString());
+    }
+    else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
+
+    const addLikes = (event) => {
+        let ignoreStaleRequest = false;
+        fetch(like_url,
+            { credentials: "same-origin", method: m })
             .then((response) => {
                 if (!response.ok) throw Error(response.statusText);
                 return response.json();
             })
             .then((data) => {
-
-
+                // If ignoreStaleRequest was set to true, we want to ignore the results of the
+                // the request. Otherwise, update the state to trigger a new render.
                 if (!ignoreStaleRequest) {
-                    setLognamenameLikedThis(data['likes']['lognameLikesThis'])
-                    setNumLikes(data['likes']['numlikes'])
-                    setPostid(data['postid'])
-                    //setLikeid(data['likes']['url'])
                 }
             })
             .catch((error) => console.log(error));
+        setNumLikes(numlikes + 1);
+        setLognamenameLikedThis(!lognamelikedthis);
+        setButtonText("unlike");
+
+    }
+    const deleteLikes = (event) => {
+        let ignoreStaleRequest = false;
+        fetch(like_url,
+            { credentials: "same-origin", method: m })
+            .then((response) => {
+                if (!response.ok) throw Error(response.statusText);
+                return response.json();
+            })
+            .then((data) => {
+                // If ignoreStaleRequest was set to true, we want to ignore the results of the
+                // the request. Otherwise, update the state to trigger a new render.
+                if (!ignoreStaleRequest) {
+                }
+            })
+            .catch((error) => console.log(error));
+        setNumLikes(numlikes - 1);
+        setLognamenameLikedThis(!lognamelikedthis);
+        setButtonText("like");
+
+    }
+
+    const handleclick = () => {
         if (lognameLikesThis) {
-            m = "DELETE";
-            like_url = "/api/v1/likes/".concat(likeid.toString());
+            deleteLikes(lognamelikedthis, numlikes)
         }
-        else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
-
-        const addLikes = async (lognamelikedthis, numlikes) => {
-            let response = await fetch(like_url, {
-                method: m
-            });
-            let data = await response.json();
-            setNumLikes(numlikes + 1);
-            setLognamenameLikedThis(!lognamelikedthis);
-
-        }
-        const deleteLikes = async (lognamelikedthis, numlikes) => {
-            let response = await fetch(like_url, {
-                method: m
-            });
-            let data = await response.json();
-            setNumLikes(numlikes - 1);
-            setLognamenameLikedThis(!lognamelikedthis)
-
+        else {
+            addLikes(lognamelikedthis, numlikes)
         }
 
-        const handleclick = () => {
-            if (lognameLikesThis) {
-                deleteLikes(lognamelikedthis, numlikes)
-            }
-            else {
-                addLikes(lognamelikedthis, numlikes)
-            }
-
-        }
-        //already liked, delete a like 
-        return (
-            <div className="likes">
-                <p>{numlikes} likes</p>
-                <button onclick={updateLikes} className="like-unlike-button">
-                    like
-                </button>
-            </div>
-        );
-
-
-
-    });
-};
-export default updateLikes;
+    };
+    return (
+        <div className="likeButton">
+            <p>{numlikes} likes</p>
+            <button onclick={handleclick} className="like-unlike-button">
+                {buttontext}
+            </button>
+        </div>
+    );
+}
