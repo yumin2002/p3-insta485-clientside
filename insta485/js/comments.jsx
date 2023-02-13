@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 export default function Comments({ url, comments }) {
   const [formText, setFormText] = useState("");
-  const [commentList, setCommentList] = useState([...comments]);
 
   var postid = url.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
   url = "/api/v1/comments/?postid=" + postid;
+
+  useEffect(() => {
+    comments = comments;
+  });
 
   function handleDelete(event) {
     console.log(event);
@@ -27,7 +30,7 @@ export default function Comments({ url, comments }) {
       })
       .then((data) => {
         if (!ignoreStaleRequest) {
-          setCommentList([...commentList, ...[data]]);
+          comments = [...comments, ...[data]];
         }
       })
       .catch((error) => console.log(error));
@@ -50,7 +53,7 @@ export default function Comments({ url, comments }) {
       })
       .then((data) => {
         if (!ignoreStaleRequest) {
-          setCommentList([...commentList, ...[data]]);
+          comments = [...comments, ...[data]];
         }
       })
       .catch((error) => console.log(error));
