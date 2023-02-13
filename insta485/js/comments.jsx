@@ -5,6 +5,7 @@ export default function Comments({ url, comments }) {
   const [commentList, setCommentList] = useState([]);
 
   var postid = url.replace("/api/v1/posts/", "");
+  postid = postid.replace("/", "");
   url = "/api/v1/comments/?postid=" + postid;
   console.log(url);
 
@@ -27,8 +28,16 @@ export default function Comments({ url, comments }) {
   const handleDelete = (event) => {};
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     let ignoreStaleRequest = false;
-    fetch(url, { credentials: "same-origin", method: "POST" })
+    fetch(url, {
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ text: formText }),
+    })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -40,7 +49,6 @@ export default function Comments({ url, comments }) {
         }
       })
       .catch((error) => console.log(error));
-    event.preventDefault();
     setFormText("");
   };
 
