@@ -9,11 +9,13 @@ def post_like():
     """Post likes."""
     auth = basic_auth()
     if not auth and 'username' not in flask.session:
+        print("1")
         flask.abort(403)
     # get logname
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     elif flask.request.authorization is None:
+        print("1")
         flask.abort(403)
     else:
         logname = flask.session["username"]
@@ -65,12 +67,11 @@ def delete_like(likeid):
     logname = ""
 
     if not auth and 'username' not in flask.session:
+        print("3")
         flask.abort(403)
 
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
-    elif flask.request.authorization is None:
-        flask.abort(403)
     else:
         logname = flask.session["username"]
 

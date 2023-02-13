@@ -1,76 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
-export default function UpdateLikes({ likes }) {
-    const [numlikes, setNumLikes] = useState(0);
-    const [lognamelikedthis, setLognamenameLikedThis] = useState(false);
-    const [buttontext, setButtonText] = useState('like');
+export default function UpdateLikes({ btext, num, likeUrl, lognamelikesthis, post_url, clickhandler }) {
+    // const [numlikes, setNumLikes] = useState(num);
+    // const [lognamelikedthis, setLognamenameLikedThis] = useState(false);
+    // const [buttontext, setButtonText] = useState('like');
     // const [likeid, setLikeid] = useState(0);
     // const [postid, setPostid] = useState(0);
-    post_url = '/api/v1/posts/'.concat(postid.toString());
-    console.log(post_url)
 
-    if (likes['lognameLikesThis']) {
-        m = "DELETE";
-        like_url = "/api/v1/likes/".concat(likeid.toString());
-    }
-    else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
+    const numlikes = num;
+    const lognamelikedthis = lognamelikesthis;
+    const buttontext = false
+    //if logname doesnot like this, likeurl is null
+    // var postid = post_url.replace("/api/v1/posts/", "");
+    // postid = postid.replace("/", "");
+    // //post_url = "/api/v1/comments/?postid=" + postid;
+    // //if not liked, like url will be null
 
-    const addLikes = (event) => {
-        let ignoreStaleRequest = false;
-        fetch(like_url,
-            { credentials: "same-origin", method: m })
-            .then((response) => {
-                if (!response.ok) throw Error(response.statusText);
-                return response.json();
-            })
-            .then((data) => {
-                // If ignoreStaleRequest was set to true, we want to ignore the results of the
-                // the request. Otherwise, update the state to trigger a new render.
-                if (!ignoreStaleRequest) {
-                }
-            })
-            .catch((error) => console.log(error));
-        setNumLikes(numlikes + 1);
-        setLognamenameLikedThis(!lognamelikedthis);
-        setButtonText("unlike");
+    // var likeid;
+    // // if (likeUrl != "") {
 
-    }
-    const deleteLikes = (event) => {
-        let ignoreStaleRequest = false;
-        fetch(like_url,
-            { credentials: "same-origin", method: m })
-            .then((response) => {
-                if (!response.ok) throw Error(response.statusText);
-                return response.json();
-            })
-            .then((data) => {
-                // If ignoreStaleRequest was set to true, we want to ignore the results of the
-                // the request. Otherwise, update the state to trigger a new render.
-                if (!ignoreStaleRequest) {
-                }
-            })
-            .catch((error) => console.log(error));
-        setNumLikes(numlikes - 1);
-        setLognamenameLikedThis(!lognamelikedthis);
-        setButtonText("like");
+    // // }
 
-    }
+    // console.log(post_url);
+    // console.log(postid);
+    // // useEffect(() => {
+    // let m;
+    // let like_url;
+    // if (lognamelikesthis) {
+    //     m = "DELETE";
+    //     likeid = likeUrl.replace("/api/v1/likes/", "");
+    //     likeid = likeid.replace("/", "");
+    //     like_url = "/api/v1/likes/".concat(likeid.toString()) + "/";
+    // }
+    // else { m = "POST"; like_url = "/api/v1/likes/?postid=".concat(postid.toString()); }
+    // console.log(like_url)
 
-    const handleclick = () => {
-        if (lognameLikesThis) {
-            deleteLikes(lognamelikedthis, numlikes)
-        }
-        else {
-            addLikes(lognamelikedthis, numlikes)
-        }
-
-    };
+    //}, [numlikes, lognamelikedthis]);
     return (
         <div className="likeButton">
             <p>{numlikes} likes</p>
-            <button onclick={handleclick} className="like-unlike-button">
-                {buttontext}
+            <button onClick={clickhandler} className="like-unlike-button">
+                {btext}
             </button>
         </div>
     );
 }
+

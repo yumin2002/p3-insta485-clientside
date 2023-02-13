@@ -7,7 +7,8 @@ export default function Comments({ url, comments }) {
   var postid = url.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
   url = "/api/v1/comments/?postid=" + postid;
-  console.log(url);
+  // console.log(url);
+  // console.log(postid);
 
   const renderedComments = comments.map((comment) => {
     // Return HTML for one clue
@@ -25,7 +26,7 @@ export default function Comments({ url, comments }) {
       </div>
     );
   });
-  const handleDelete = (event) => {};
+  const handleDelete = (event) => { };
 
   const handleSubmit = (event) => {
     event.preventDefault();
