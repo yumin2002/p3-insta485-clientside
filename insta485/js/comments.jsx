@@ -2,31 +2,36 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 export default function Comments({ url, comments }) {
   const [formText, setFormText] = useState("");
-  const [commentList, setCommentList] = useState([]);
+  const [commentList, setCommentList] = useState([...comments]);
 
   var postid = url.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
   url = "/api/v1/comments/?postid=" + postid;
-  // console.log(url);
-  // console.log(postid);
 
-  const renderedComments = comments.map((comment) => {
-    // Return HTML for one clue
-    if (comment["lognameOwnsThis"]) {
-      return (
-        <div>
-          {comment["owner"]} {comment["text"]}
-          <button onClick={handleDelete}>delete</button>
-        </div>
-      );
-    }
-    return (
-      <div>
-        {comment["owner"]} {comment["text"]}
-      </div>
-    );
-  });
-  const handleDelete = (event) => { };
+  function handleDelete(event) {
+    console.log(event);
+    var id_to_delete = event.target.id;
+    var url_delete = "/api/v1/comments/" + id_to_delete + "/";
+    event.preventDefault();
+    let ignoreStaleRequest = false;
+    fetch(url_delete, {
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+        if (!ignoreStaleRequest) {
+          setCommentList([...commentList, ...[data]]);
+        }
+      })
+      .catch((error) => console.log(error));
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -44,9 +49,8 @@ export default function Comments({ url, comments }) {
         return response.json();
       })
       .then((data) => {
-        // If ignoreStaleRequest was set to true, we want to ignore the results of the
-        // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
+          setCommentList([...commentList, ...[data]]);
         }
       })
       .catch((error) => console.log(error));
@@ -59,7 +63,24 @@ export default function Comments({ url, comments }) {
   };
   return (
     <div>
-      {renderedComments}
+      {comments.map((comment) => {
+        // Return HTML for one clue
+        if (comment["lognameOwnsThis"]) {
+          return (
+            <div>
+              {comment["owner"]} {comment["text"]}
+              <button onClick={handleDelete} id={comment["commentid"]}>
+                delete
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div>
+            {comment["owner"]} {comment["text"]}
+          </div>
+        );
+      })}
       <form id="comment-form">
         <input
           id="input"
