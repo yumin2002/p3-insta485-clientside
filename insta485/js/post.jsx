@@ -183,6 +183,7 @@ export default function Post({ url }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(event);
     // get a url
     var postid = postUrl.replace("/api/v1/posts/", "");
     postid = postid.replace("/", "");
@@ -195,7 +196,7 @@ export default function Post({ url }) {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ text: document.getElementById("input").value }),
+      body: JSON.stringify({ text: event.target[0].value }),
     })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
@@ -204,7 +205,7 @@ export default function Post({ url }) {
       .then((data) => {
         if (!ignoreStaleRequest) {
           setComments([...comments, ...[data]]);
-          document.getElementById("input").value = "";
+          event.target[0].value = "";
         }
       })
       .catch((error) => console.log(error));
