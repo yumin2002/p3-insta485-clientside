@@ -68,7 +68,6 @@ def delete_like(likeid):
     logname = ""
 
     if not auth and 'username' not in flask.session:
-        print("3")
         flask.abort(403)
 
     if flask.request.authorization is not None:
@@ -93,7 +92,7 @@ def delete_like(likeid):
         cur = connection.execute(
             "DELETE FROM likes "
             "WHERE likeid=?",
-            (likeid)
+            (int(likeid),)
         )
         return "", 204
 

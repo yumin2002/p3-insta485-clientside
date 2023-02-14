@@ -24,6 +24,9 @@ export default function Post({ url }) {
   const [likeid, setLikeid] = useState(0);
   var like_id;
 
+  const doSetLikeid = (num) => {
+    setLikeid(num);
+  };
   useEffect(() => {
     // Declare a boolean flag that we can use to cancel the API request.
     let ignoreStaleRequest = false;
@@ -55,7 +58,7 @@ export default function Post({ url }) {
           //get likeid
           like_id = likeurl.replace("/api/v1/likes/", "");
           like_id = like_id.replace("/", "");
-          setLikeid(Number(like_id))
+          doSetLikeid(Number(like_id))
           if (loglikes) {
             setButtonText("unlike")
           } else {
@@ -88,11 +91,12 @@ export default function Post({ url }) {
 
   // }
   // else { m = "POST"; }
-  console.log(like_url)
 
   const addLikes = (event) => {
     let ignoreStaleRequest = false;
-
+    if (loglikes) {
+      return;
+    }
     like_url = "/api/v1/likes/?postid=".concat(postid.toString());
     fetch(like_url,
       { credentials: "same-origin", method: "POST" })
@@ -105,7 +109,7 @@ export default function Post({ url }) {
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
           setLikeid(data["likeid"]);
-          like_id = data['likeid']
+          //like_id = data['likeid']
         }
       })
       .catch((error) => console.log(error));
@@ -217,7 +221,7 @@ export default function Post({ url }) {
       <p>{owner}</p>
       <p>{timeStamp}</p>
       <img src={ownerImgUrl} alt="owner_image" />
-      <img src={imgUrl} alt="post_image" />
+      <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
       <UpdateLikes
         btext={likeButtonText}
         num={numLikes}
