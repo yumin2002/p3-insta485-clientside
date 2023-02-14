@@ -62,6 +62,7 @@ export default function Feed({ url }) {
       next={fetchData(pageUrl)}
       hasMore={hasNext}
       loader={<h4>Loading...</h4>}
+      scrollThreshold="200px"
       endMessage={
         <p style={{ textAlign: "center" }}>
           <b>Yay! You have seen it all</b>
