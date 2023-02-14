@@ -6,8 +6,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Feed({ url }) {
-  const [pageUrl, setPageUrl] = useState(url);
-  const [postsUrls, setPostsUrls] = useState(() => {
+  const [pageUrl, setPageUrl] = useState("");
+  const [postsUrls, setPostsUrls] = useState([]);
+  const [hasNext, setHasNext] = useState(false);
+
+  useEffect(() => {
     var initialPosts = [];
     fetch(url, { credentials: "same-origin" })
       .then((response) => {
@@ -20,16 +23,16 @@ export default function Feed({ url }) {
         });
         if (data["next"] == "") {
           setHasNext(false);
-          setPageUrl("");
+          //   setPageUrl("");
+          setPostsUrls([...initialPosts]);
         } else {
           setHasNext(true);
           setPageUrl(data["next"]);
+          setPostsUrls([...initialPosts]);
         }
       })
       .catch((error) => console.log(error));
-    return [...initialPosts];
-  });
-  const [hasNext, setHasNext] = useState(true);
+  }, []);
 
   function fetchData(curr_pageUrl) {
     console.log(hasNext);
@@ -61,7 +64,7 @@ export default function Feed({ url }) {
   // Render post image and post owner
   return (
     <InfiniteScroll
-      dataLength={postsUrls} //This is important field to render the next data
+      dataLength={postsUrls.length} //This is important field to render the next data
       next={fetchData(pageUrl)}
       hasMore={hasNext}
       loader={<h4>Loading...</h4>}
@@ -73,7 +76,11 @@ export default function Feed({ url }) {
       }
     >
       {postsUrls.map((postUrl) => {
-        return <Post url={postUrl} />;
+        return (
+          <div>
+            <Post url={postUrl} />
+          </div>
+        );
       })}
     </InfiniteScroll>
   );
