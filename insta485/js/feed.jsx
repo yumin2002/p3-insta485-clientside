@@ -6,37 +6,61 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Feed({ url }) {
-  const [postsUrls, setPostsUrls] = useState([
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-    "/api/v1/posts/1/",
-  ]);
-  //   useEffect(() => {
-  //     setPostsUrls([
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //       "/api/v1/posts/1/",
-  //     ]);
-  //   });
-  function fetchData() {
-    setPostsUrls([...postsUrls, ["/api/v1/posts/1/"]]);
-    console.log(postsUrls);
+  const [hasNext, setHasNext] = useState(true);
+  const [pageUrl, setPageUrl] = useState(url);
+  const [postsUrls, setPostsUrls] = useState(() => {
+    var initialPosts = [];
+    fetch(url, { credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+        initialPosts = data["results"].map((result) => {
+          return result["url"];
+        });
+        if (data["next"] == "") {
+          setHasNext(false);
+          setPageUrl("");
+        } else {
+          setHasNext(true);
+          setPageUrl(data["next"]);
+        }
+      })
+      .catch((error) => console.log(error));
+    return [...initialPosts];
+  });
+
+  function fetchData(curr_pageUrl) {
+    var newPosts = [];
+    fetch(curr_pageUrl, { credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+        newPosts = data["results"].map((result) => {
+          return result["url"];
+        });
+        if (data["next"] == "") {
+          setHasNext(false);
+          setPageUrl("");
+          setPostsUrls([...postsUrls, ...newPosts]);
+        } else {
+          setHasNext(true);
+          setPageUrl(data["next"]);
+          setPostsUrls([...postsUrls, ...newPosts]);
+        }
+      })
+      .catch((error) => console.log(error));
   }
 
   // Render post image and post owner
   return (
     <InfiniteScroll
       dataLength={postsUrls} //This is important field to render the next data
-      next={fetchData}
-      hasMore={true}
+      next={fetchData(pageUrl)}
+      hasMore={hasNext}
       loader={<h4>Loading...</h4>}
       endMessage={
         <p style={{ textAlign: "center" }}>

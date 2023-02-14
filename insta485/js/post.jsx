@@ -22,6 +22,8 @@ export default function Post({ url }) {
   const [postUrl, setPostUrl] = useState("");
   const [likeButtonText, setButtonText] = useState("button");
   const [likeid, setLikeid] = useState(0);
+  var like_id;
+
   useEffect(() => {
     // Declare a boolean flag that we can use to cancel the API request.
     let ignoreStaleRequest = false;
@@ -69,19 +71,17 @@ export default function Post({ url }) {
       // should avoid updating state.
       ignoreStaleRequest = true;
     };
-  }, [url]);
+  }, [url, likeid]);
 
   var postid = postUrl.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
   //post_url = "/api/v1/comments/?postid=" + postid;
   //if not liked, like url will be null
 
-  var like_id;
 
 
   console.log(postUrl);
   console.log(postid);
-  let m;
   let like_url;
   // if (loglikes) {
   //   m = "DELETE";
@@ -105,7 +105,7 @@ export default function Post({ url }) {
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
           setLikeid(data["likeid"]);
-          // like_id = data['likeid']
+          like_id = data['likeid']
         }
       })
       .catch((error) => console.log(error));
