@@ -17,6 +17,7 @@ export default function UpdateLikes({
   const numlikes = num;
   const lognamelikedthis = lognamelikesthis;
   const buttontext = false;
+  var like_text = "";
   //if logname doesnot like this, likeurl is null
   // var postid = post_url.replace("/api/v1/posts/", "");
   // postid = postid.replace("/", "");
@@ -43,9 +44,15 @@ export default function UpdateLikes({
   // console.log(like_url)
 
   //}, [numlikes, lognamelikedthis]);
+  if (numlikes == 1) { like_text = numlikes.toString() + " like" }
+  else {
+    like_text = numlikes.toString() + " likes"
+  }
   return (
     <div className="likeButton">
-      <p>{numlikes} likes</p>
+
+
+      <p>{like_text}</p>
       <button onClick={clickhandler} className="like-unlike-button">
         {btext}
       </button>
