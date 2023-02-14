@@ -6,7 +6,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Feed({ url }) {
-  const [hasNext, setHasNext] = useState(true);
   const [pageUrl, setPageUrl] = useState(url);
   const [postsUrls, setPostsUrls] = useState(() => {
     var initialPosts = [];
@@ -30,6 +29,7 @@ export default function Feed({ url }) {
       .catch((error) => console.log(error));
     return [...initialPosts];
   });
+  const [hasNext, setHasNext] = useState(true);
 
   function fetchData(curr_pageUrl) {
     var newPosts = [];
@@ -47,7 +47,6 @@ export default function Feed({ url }) {
           setPageUrl("");
           setPostsUrls([...postsUrls, ...newPosts]);
         } else {
-          setHasNext(true);
           setPageUrl(data["next"]);
           setPostsUrls([...postsUrls, ...newPosts]);
         }
