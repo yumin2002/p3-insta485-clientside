@@ -6,14 +6,36 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Feed({ url }) {
-  const [pageUrl, setPageUrl] = useState("");
-  const [postsUrls, setPostsUrls] = useState([]);
+  const [pageUrl, setPageUrl] = useState(url);
+  const [postsUrls, setPostsUrls] = useState(() => {
+    var initialPosts = [];
+    fetch(url, { credentials: "same-origin" })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+        initialPosts = data["results"].map((result) => {
+          return result["url"];
+        });
+        if (data["next"] == "") {
+          setHasNext(false);
+          setPageUrl("");
+        } else {
+          setHasNext(true);
+          setPageUrl(data["next"]);
+        }
+      })
+      .catch((error) => console.log(error));
+    return [...initialPosts];
+  });
   const [hasNext, setHasNext] = useState(true);
 
   function fetchData(curr_pageUrl) {
-    if (curr_pageUrl == "") {
-      setPageUrl(url);
-    }
+    console.log(hasNext);
+    console.log(curr_pageUrl);
+    console.log(pageUrl);
+    console.log(postsUrls);
     var newPosts = [];
     fetch(curr_pageUrl, { credentials: "same-origin" })
       .then((response) => {
@@ -34,10 +56,6 @@ export default function Feed({ url }) {
         }
       })
       .catch((error) => console.log(error));
-    console.log(pageUrl);
-    console.log(hasNext);
-    console.log(postsUrls);
-    console.log(curr_pageUrl);
   }
 
   // Render post image and post owner
