@@ -8,9 +8,12 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
         if (comment["lognameOwnsThis"]) {
           return (
             <div key={comments["commentid"]}>
-
               {comment["owner"]} {comment["text"]}
-              <button onClick={handleDelete} id={comment["commentid"]} key={comments["commentid"]}>
+              <button
+                onClick={handleDelete}
+                id={comment["commentid"]}
+                key={comments["commentid"]}
+              >
                 delete
               </button>
             </div>
@@ -22,7 +25,11 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
           </div>
         );
       })}
-      <form className="comment-form" onSubmit={handleSubmit} key={comments["commentid"]}>
+      <form
+        className="comment-form"
+        onSubmit={handleSubmit}
+        key={"form" + comments["commentid"]}
+      >
         <input type="text" />
       </form>
     </div>
