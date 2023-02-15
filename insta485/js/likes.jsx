@@ -53,7 +53,7 @@ export default function UpdateLikes({
 
 
       <p>{like_text}</p>
-      <button onClick={clickhandler} class="like-unlike-button">
+      <button onClick={clickhandler} className="like-unlike-button">
         {btext}
       </button>
     </div>
