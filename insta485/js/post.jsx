@@ -238,7 +238,6 @@ export default function Post({ url }) {
         handleDelete={handleDelete}
         handleSubmit={handleSubmit}
         comments={comments}
-        key={comments["commentid"]}
       />
     </div>
   );

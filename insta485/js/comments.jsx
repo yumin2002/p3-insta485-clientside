@@ -4,28 +4,34 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
   return (
     <div>
       {comments.map((comment) => {
+
         // Return HTML for one clue
         if (comment["lognameOwnsThis"]) {
+          //setuniqueid(uniqueid + 1)
           return (
-            <div key={comments["commentid"]}>
+            <div key={comment["commentid"]}>
 
               {comment["owner"]} {comment["text"]}
-              <button onClick={handleDelete} id={comment["commentid"]} key={comments["commentid"]}>
+              <button onClick={handleDelete} id={comment["commentid"]}>
                 delete
               </button>
+
             </div>
+
           );
+
         }
         return (
-          <div key={comments["commentid"]}>
+          <div key={comment["commentid"]}>
             {comment["owner"]} {comment["text"]}
           </div>
         );
+
       })}
-      <form className="comment-form" onSubmit={handleSubmit} key={comments["commentid"]}>
+      <form className="comment-form" onSubmit={handleSubmit}>
         <input type="text" />
       </form>
-    </div>
+    </div >
   );
 }
 Comments.propTypes = {
