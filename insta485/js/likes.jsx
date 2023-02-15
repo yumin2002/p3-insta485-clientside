@@ -12,14 +12,13 @@ export default function UpdateLikes({
   const lognamelikedthis = lognamelikesthis;
   const buttontext = false;
   var like_text = "";
-  if (numlikes == 1) { like_text = numlikes.toString() + " like" }
-  else {
-    like_text = numlikes.toString() + " likes"
+  if (numlikes == 1) {
+    like_text = numlikes.toString() + " like";
+  } else {
+    like_text = numlikes.toString() + " likes";
   }
   return (
     <div className="likeButton">
-
-
       <p>{like_text}</p>
       <button onClick={clickhandler} className="like-unlike-button">
         {btext}
