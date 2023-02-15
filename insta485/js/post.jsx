@@ -8,7 +8,7 @@ import UpdateLikes from "./likes";
 // url is a prop for the Post component.
 export default function Post({ url }) {
   var like = 0;
-  // var like_id_num = 
+  // var like_id_num =
   // like_id = likeurl.replace("/api/v1/likes/", "");
   //   like_id = like_id.replace("/", "");
   /* Display image and post owner of a single post */
@@ -67,12 +67,12 @@ export default function Post({ url }) {
           //get likeid
           like_id = likeurl.replace("/api/v1/likes/", "");
           like_id = like_id.replace("/", "");
-          doSetLikeid(Number(like_id))
-          like = like_id
+          doSetLikeid(Number(like_id));
+          like = like_id;
           if (lls) {
-            setButtonText("unlike")
+            setButtonText("unlike");
           } else {
-            setButtonText("like")
+            setButtonText("like");
           }
         }
       })
@@ -91,12 +91,9 @@ export default function Post({ url }) {
   //post_url = "/api/v1/comments/?postid=" + postid;
   //if not liked, like url will be null
 
-
-
-  console.log(postUrl);
-  console.log(postid);
+  //   console.log(postUrl);
+  //   console.log(postid);
   let like_url;
-
 
   const addLikes = (event) => {
     let ignoreStaleRequest = false;
@@ -104,8 +101,7 @@ export default function Post({ url }) {
       return;
     }
     like_url = "/api/v1/likes/?postid=".concat(postid.toString());
-    fetch(like_url,
-      { credentials: "same-origin", method: "POST" })
+    fetch(like_url, { credentials: "same-origin", method: "POST" })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -115,7 +111,7 @@ export default function Post({ url }) {
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
           setlikeurl(data["url"]);
-          like = data['likeid']
+          like = data["likeid"];
         }
       })
       .catch((error) => console.log(error));
@@ -131,12 +127,13 @@ export default function Post({ url }) {
     // setLikeid(Number(like_id));
     console.log(like);
     like_url = "/api/v1/likes/".concat(like_id.toString()) + "/";
-    fetch(like_url,
-      {
-        credentials: "same-origin", method: "DELETE", headers: {
-          "Content-Type": "application/json",
-        },
-      })
+    fetch(like_url, {
+      credentials: "same-origin",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         // return response.json();
@@ -145,7 +142,6 @@ export default function Post({ url }) {
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
-
         }
       })
       .catch((error) => console.log(error));
