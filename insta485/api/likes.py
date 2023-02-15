@@ -20,7 +20,7 @@ def post_like():
     #     flask.abort(403)
     else:
         logname = flask.session["username"]
-    print("exit3")
+    print(flask.request.args.get('postid'))
     postid = int(flask.request.args.get('postid'))
 
     connection = insta485.model.get_db()
@@ -39,6 +39,9 @@ def post_like():
             "url": f"/api/v1/likes/{likeid}/"
         }
         return flask.jsonify(data)
+    print("debug")
+    print(postid)
+    print(logname)
     cur = connection.execute(
         "INSERT INTO likes (owner, postid)"
         "VALUES (?, ?)",

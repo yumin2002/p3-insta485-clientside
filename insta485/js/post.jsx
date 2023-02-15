@@ -7,11 +7,6 @@ import UpdateLikes from "./likes";
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
 export default function Post({ url }) {
-  var like = 0;
-  // var like_id_num =
-  // like_id = likeurl.replace("/api/v1/likes/", "");
-  //   like_id = like_id.replace("/", "");
-  /* Display image and post owner of a single post */
   const [imgUrl, setImgUrl] = useState("");
   const [owner, setOwner] = useState("");
   const [ownerImgUrl, setOwnerImg] = useState("");
@@ -26,6 +21,8 @@ export default function Post({ url }) {
   const [postShowUrl, setPostShowUrl] = useState("");
   const [ownerShowUrl, setOwnerShowUrl] = useState("");
   const [keypostid, setPostid] = useState("");
+  //const [finished, setfinished] = useState(false);
+  var finished = false;
   var like_id;
   var lls = false;
 
@@ -68,12 +65,12 @@ export default function Post({ url }) {
           like_id = likeurl.replace("/api/v1/likes/", "");
           like_id = like_id.replace("/", "");
           doSetLikeid(Number(like_id));
-          like = like_id;
           if (lls) {
             setButtonText("unlike");
           } else {
             setButtonText("like");
           }
+          finished = true;
         }
       })
       .catch((error) => console.log(error));
@@ -84,7 +81,7 @@ export default function Post({ url }) {
       // should avoid updating state.
       ignoreStaleRequest = true;
     };
-  }, [url, likeid]);
+  }, [url]);
 
   var postid = postUrl.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
@@ -96,7 +93,7 @@ export default function Post({ url }) {
   let like_url;
 
   const addLikes = (event) => {
-    let ignoreStaleRequest = false;
+
     if (loglikes) {
       return;
     }
@@ -111,7 +108,6 @@ export default function Post({ url }) {
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
           setlikeurl(data["url"]);
-          like = data["likeid"];
         }
       })
       .catch((error) => console.log(error));
@@ -120,12 +116,11 @@ export default function Post({ url }) {
     setButtonText("unlike");
   };
   const deleteLikes = (event) => {
-    let ignoreStaleRequest = false;
+
     like_id = likeurl.replace("/api/v1/likes/", "");
     like_id = like_id.replace("/", "");
     // console.log(Number(like_id));
     // setLikeid(Number(like_id));
-    console.log(like);
     like_url = "/api/v1/likes/".concat(like_id.toString()) + "/";
     fetch(like_url, {
       credentials: "same-origin",
@@ -219,29 +214,38 @@ export default function Post({ url }) {
   };
 
   // Render post image and post owner
-  return (
-    <div className="post">
-      <a href={ownerShowUrl}>{owner}</a>
-      <a href={postShowUrl}>{timeStamp}</a>
-      <img href={ownerShowUrl} src={ownerImgUrl} alt="owner_image" />
-      <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
-      <UpdateLikes
-        btext={likeButtonText}
-        num={numLikes}
-        likeUrl={likeurl}
-        lognamelikesthis={loglikes}
-        post_url={postUrl}
-        clickhandler={handleclick}
-        key={keypostid}
-      />
-      <Comments
-        handleDelete={handleDelete}
-        handleSubmit={handleSubmit}
-        comments={comments}
-      />
-    </div>
-  );
+  if ({ finished }) {
+    return (
+      <div className="post">
+        <a href={ownerShowUrl}>{owner}</a>
+        <a href={postShowUrl}>{timeStamp}</a>
+        <img href={ownerShowUrl} src={ownerImgUrl} alt="owner_image" />
+        <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
+
+        <UpdateLikes
+          btext={likeButtonText}
+          num={numLikes}
+          likeUrl={likeurl}
+          lognamelikesthis={loglikes}
+          post_url={postUrl}
+          clickhandler={handleclick}
+          key={keypostid}
+        />
+
+
+
+        <Comments
+          handleDelete={handleDelete}
+          handleSubmit={handleSubmit}
+          comments={comments}
+        />
+      </div>
+    )
+  }
 }
+
+
+
 
 Post.propTypes = {
   url: PropTypes.string.isRequired,
