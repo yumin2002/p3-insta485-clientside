@@ -10,47 +10,48 @@ export default function Feed({ url }) {
   // const [postKey, setPostKey] = useState(0)
   var postKey = 0;
   // const [postsUrls, setPostsUrls] = useState(() => {
-  const [pageUrl, setPageUrl] = useState("");
+  const [nextPageUrl, setPageUrl] = useState("/api/v1/posts/");
   const [postsUrls, setPostsUrls] = useState([]);
   const [hasNext, setHasNext] = useState(false);
   const [fetchNext, setFetchNext] = useState(true);
 
   useEffect(() => {
-    console.log(pageUrl);
+    console.log(nextPageUrl);
     console.log(postsUrls);
     console.log(hasNext);
     console.log(fetchNext);
-    var initialPosts = [];
     if (!fetchNext) {
       return;
     }
-    fetch(url, { credentials: "same-origin" })
+    var newPosts = [];
+    fetch(nextPageUrl, { credentials: "same-origin" })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
       })
       .then((data) => {
-        initialPosts = data["results"].map((result) => {
+        newPosts = data["results"].map((result) => {
           return result["url"];
         });
         if (data["next"] == "") {
           setHasNext(false);
-          //   setPageUrl("");
-          setPostsUrls([...initialPosts]);
+          setPageUrl("");
+          setPostsUrls([...postsUrls, ...newPosts]);
         } else {
           setHasNext(true);
           setPageUrl(data["next"]);
-          setPostsUrls([...initialPosts]);
+          setPostsUrls([...postsUrls, ...newPosts]);
         }
       })
       .catch((error) => console.log(error));
-  }, [fetchNext, pageUrl, postsUrls]);
+  }, [fetchNext]);
 
   // Render post image and post owner
   return (
     <InfiniteScroll
       dataLength={postsUrls.length} //This is important field to render the next data
       next={() => {
+        console.log("CALL NEXT!!!!");
         setFetchNext(true);
       }}
       hasMore={hasNext}
