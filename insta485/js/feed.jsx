@@ -60,7 +60,7 @@ export default function Feed({ url }) {
       scrollThreshold="200px"
       endMessage={
         <p style={{ textAlign: "center" }}>
-          <b>Yay! You have seen it all</b>
+          <b>Yay! You have seen it all!</b>
         </p>
       }
     >

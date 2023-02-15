@@ -12,13 +12,9 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
             <div key={comment["commentid"]}>
               <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
               <span className="comment-text">{comment["text"]}</span>
-
               <button className="delete-comment-button" onClick={handleDelete} id={comment["commentid"]}>
                 delete
               </button>
-
-
-
             </div>
 
           );
