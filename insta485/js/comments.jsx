@@ -7,21 +7,22 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
         // Return HTML for one clue
         if (comment["lognameOwnsThis"]) {
           return (
-            <div>
+            <div key={comments["commentid"]}>
+
               {comment["owner"]} {comment["text"]}
-              <button onClick={handleDelete} id={comment["commentid"]}>
+              <button onClick={handleDelete} id={comment["commentid"]} key={comments["commentid"]}>
                 delete
               </button>
             </div>
           );
         }
         return (
-          <div>
+          <div key={comments["commentid"]}>
             {comment["owner"]} {comment["text"]}
           </div>
         );
       })}
-      <form onSubmit={handleSubmit}>
+      <form className="comment-form" onSubmit={handleSubmit}>
         <input type="text" />
       </form>
     </div>

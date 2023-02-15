@@ -7,6 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 // url is a prop for the Post component.
 export default function Feed({ url }) {
   const [pageUrl, setPageUrl] = useState(url);
+  const [postKey, setPostKey] = useState(0)
   const [postsUrls, setPostsUrls] = useState(() => {
     var initialPosts = [];
     fetch(url, { credentials: "same-origin" })
@@ -25,6 +26,7 @@ export default function Feed({ url }) {
           setHasNext(true);
           setPageUrl(data["next"]);
         }
+        setPostKey(data["results"]["postid"])
       })
       .catch((error) => console.log(error));
     return [...initialPosts];
@@ -67,14 +69,16 @@ export default function Feed({ url }) {
           <b>Yay! You have seen it all</b>
         </p>
       }
+
     >
       {postsUrls.map((postUrl) => {
-        return <Post url={postUrl} />;
+        return <Post url={postUrl} key={postKey} />;
       })}
+
     </InfiniteScroll>
   );
 }
 
-Post.propTypes = {
+Feed.propTypes = {
   url: PropTypes.string.isRequired,
 };
