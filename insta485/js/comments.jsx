@@ -10,8 +10,8 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
           //setuniqueid(uniqueid + 1)
           return (
             <div key={comment["commentid"]}>
-
-              {comment["owner"]} {comment["text"]}
+              <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
+              {comment["text"]}
               <button onClick={handleDelete} id={comment["commentid"]}>
                 delete
               </button>
@@ -23,7 +23,7 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
         }
         return (
           <div key={comment["commentid"]}>
-            {comment["owner"]} {comment["text"]}
+            <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a> {comment["text"]}
           </div>
         );
 
