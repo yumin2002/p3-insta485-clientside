@@ -23,9 +23,9 @@ export default function Post({ url }) {
   const [postUrl, setPostUrl] = useState("");
   const [likeButtonText, setButtonText] = useState("button");
   const [likeid, setLikeid] = useState(0);
-  const [postShowUrl, setPostShowUrl] = useState("")
-  const [ownerShowUrl, setOwnerShowUrl] = useState("")
-  const [keypostid, setPostid] = useState("")
+  const [postShowUrl, setPostShowUrl] = useState("");
+  const [ownerShowUrl, setOwnerShowUrl] = useState("");
+  const [keypostid, setPostid] = useState("");
   var like_id;
   var lls = false;
 
@@ -60,10 +60,10 @@ export default function Post({ url }) {
           setloglikes(data["likes"]["lognameLikesThis"]);
           setTime(moment.utc(data["created"]).fromNow());
           setPostUrl(data["url"]);
-          setPostShowUrl(data["postShowUrl"])
-          setOwnerShowUrl(data["ownerShowUrl"])
-          setPostid(["postid"])
-          lls = data["likes"]["lognameLikesThis"]
+          setPostShowUrl(data["postShowUrl"]);
+          setOwnerShowUrl(data["ownerShowUrl"]);
+          setPostid(["postid"]);
+          lls = data["likes"]["lognameLikesThis"];
           //get likeid
           like_id = likeurl.replace("/api/v1/likes/", "");
           like_id = like_id.replace("/", "");
@@ -222,9 +222,8 @@ export default function Post({ url }) {
   return (
     <div className="post">
       <a href={ownerShowUrl}>{owner}</a>
-      <p>{timeStamp}</p>
       <a href={postShowUrl}>{timeStamp}</a>
-      <img src={ownerImgUrl} alt="owner_image" />
+      <img href={ownerShowUrl} src={ownerImgUrl} alt="owner_image" />
       <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
       <UpdateLikes
         btext={likeButtonText}
