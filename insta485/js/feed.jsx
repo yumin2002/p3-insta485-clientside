@@ -82,9 +82,9 @@ export default function Feed({ url }) {
     >
       {postsUrls.map((postUrl) => {
         return (
-          <div>
-            <Post url={postUrl} key={postKey} />
-          </div>
+
+          <Post url={postUrl} key={postKey} />
+
         );
       })}
 

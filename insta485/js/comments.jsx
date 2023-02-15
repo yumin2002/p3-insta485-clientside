@@ -22,7 +22,7 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
           </div>
         );
       })}
-      <form className="comment-form" onSubmit={handleSubmit}>
+      <form className="comment-form" onSubmit={handleSubmit} key={comments["commentid"]}>
         <input type="text" />
       </form>
     </div>
