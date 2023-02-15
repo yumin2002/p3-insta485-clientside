@@ -42,6 +42,7 @@ export default function Feed({ url }) {
           setPageUrl(data["next"]);
           setPostsUrls([...postsUrls, ...newPosts]);
         }
+        setFetchNext(false);
       })
       .catch((error) => console.log(error));
   }, [fetchNext]);
