@@ -7,7 +7,7 @@ URLs include:
 import os
 import uuid
 import hashlib
-from importlib_metadata import pathlib
+import pathlib
 import flask
 import insta485
 import insta485.views.index
