@@ -20,6 +20,7 @@ def post_like():
     #     flask.abort(403)
     else:
         logname = flask.session["username"]
+    print("debuhgggg")
     print(flask.request.args.get('postid'))
     postid = int(flask.request.args.get('postid'))
 

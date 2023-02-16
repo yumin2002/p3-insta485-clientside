@@ -20,16 +20,18 @@ export default function Post({ url }) {
   const [likeid, setLikeid] = useState(0);
   const [postShowUrl, setPostShowUrl] = useState("");
   const [ownerShowUrl, setOwnerShowUrl] = useState("");
-  const [keypostid, setPostid] = useState("");
-  //const [finished, setfinished] = useState(false);
-  var finished = false;
+  const [likeText, setLikeText] = useState("");
+  const [finished, setfinished] = useState(false);
+  //var finished = false;
   var like_id;
   var lls = false;
+  var like = 0;
 
   const doSetLikeid = (num) => {
     setLikeid(num);
   };
   useEffect(() => {
+    console.log("useEffect")
     // Declare a boolean flag that we can use to cancel the API request.
     let ignoreStaleRequest = false;
 
@@ -59,7 +61,14 @@ export default function Post({ url }) {
           setPostUrl(data["url"]);
           setPostShowUrl(data["postShowUrl"]);
           setOwnerShowUrl(data["ownerShowUrl"]);
-          setPostid(["postid"]);
+          like = data["likes"]["numLikes"];
+          // if (like === 1) {
+          //   setLikeText("like");
+          // } else {
+          //   setLikeText("likes")
+          // }
+
+
           lls = data["likes"]["lognameLikesThis"];
           //get likeid
           like_id = likeurl.replace("/api/v1/likes/", "");
@@ -70,7 +79,11 @@ export default function Post({ url }) {
           } else {
             setButtonText("like");
           }
-          finished = true;
+          setfinished(true);
+          // if (numLikes == 1) { setLikeText("like"); }
+          // else {
+          //   setLikeText("likes");
+          // }
         }
       })
       .catch((error) => console.log(error));
@@ -98,7 +111,7 @@ export default function Post({ url }) {
       return;
     }
     like_url = "/api/v1/likes/?postid=".concat(postid.toString());
-    fetch(like_url, { credentials: "same-origin", method: "POST" })
+    fetch("/api/v1/likes/?" + new URLSearchParams({ postid: postid }), { credentials: "same-origin", method: "POST" })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -187,12 +200,13 @@ export default function Post({ url }) {
     event.preventDefault();
     console.log(event);
     // get a url
-    var postid = postUrl.replace("/api/v1/posts/", "");
-    postid = postid.replace("/", "");
+    // var postid = postUrl.replace("/api/v1/posts/", "");
+    // postid = postid.replace("/", "");
+    const searchparams = new URLSearchParams(url)
     var commentUrl = "/api/v1/comments/?postid=" + postid;
 
     let ignoreStaleRequest = false;
-    fetch(commentUrl, {
+    fetch("/api/v1/comments/?" + new URLSearchParams({ postid: postid }), {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
@@ -214,33 +228,69 @@ export default function Post({ url }) {
   };
 
   // Render post image and post owner
-  if ({ finished }) {
+  if (finished) {
+
     return (
       <div className="post">
         <a href={ownerShowUrl}>{owner}</a>
         <a href={postShowUrl}>{timeStamp}</a>
-        <img href={ownerShowUrl} src={ownerImgUrl} alt="owner_image" />
+
+        <a href={ownerShowUrl}><img src={ownerImgUrl} alt="owner_image" /></a>
+
         <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
 
-        <UpdateLikes
-          btext={likeButtonText}
-          num={numLikes}
-          likeUrl={likeurl}
-          lognamelikesthis={loglikes}
-          post_url={postUrl}
-          clickhandler={handleclick}
-          key={keypostid}
-        />
+
+
+        <div className="likeButton">
+
+          <p>{numLikes} {numLikes == 1 ? " like" : " likes"}</p>
+
+          <button onClick={handleclick} className="like-unlike-button">
+            {likeButtonText}
+          </button>
+        </div>
 
 
 
-        <Comments
-          handleDelete={handleDelete}
-          handleSubmit={handleSubmit}
-          comments={comments}
-        />
+        <div>
+          {comments.map((comment) => {
+
+            // Return HTML for one clue
+            if (comment["lognameOwnsThis"]) {
+              //setuniqueid(uniqueid + 1)
+              return (
+                <div key={comment["commentid"]}>
+                  <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
+                  <span className="comment-text">{comment["text"]}</span>
+                  <button className="delete-comment-button" onClick={handleDelete} id={comment["commentid"]}>
+                    delete
+                  </button>
+                </div>
+
+              );
+
+            }
+            return (
+              <div key={comment["commentid"]}>
+                <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
+                <span className="comment-text">{comment["text"]}</span>
+
+              </div>
+            );
+
+          })}
+          <form className="comment-form" onSubmit={handleSubmit}>
+            <input type="text" />
+          </form>
+        </div >
       </div>
     )
+  }
+  else {
+    console.log("entered empty")
+    return (<div>
+
+    </div>);
   }
 }
 
