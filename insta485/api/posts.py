@@ -215,22 +215,22 @@ def post_comment():
         flask.abort(403)
     print("Entered post comment1")
     postid = flask.request.args.get('postid')
-    
+
     comment_text = flask.request.json['text']
     print("Entered post comment2")
     connection = insta485.model.get_db()
-    
+
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     else:
         logname = flask.session["username"]
-    
+
     # insert the comment into db
     cur = connection.execute(
         "INSERT INTO comments (owner, postid, text) VALUES (?, ?, ?) ",
         (logname, postid, comment_text)
     )
-    
+
     # retrieve the comment for the json
     cur = connection.execute(
         "SELECT last_insert_rowid() FROM comments "

@@ -12,7 +12,6 @@ def post_like():
     if not auth and 'username' not in flask.session:
         print("exit1")
         flask.abort(403)
-    # get logname
     if flask.request.authorization is not None:
         logname = flask.request.authorization["username"]
     # elif flask.request.authorization is None:
