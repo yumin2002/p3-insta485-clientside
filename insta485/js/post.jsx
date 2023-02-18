@@ -236,6 +236,7 @@ export default function Post({ url }) {
     return (
       <div className="post">
         <a href={ownerShowUrl}>{owner}</a>
+        <p> </p>
         <a href={postShowUrl}>{timeStamp}</a>
 
         <a href={ownerShowUrl}>

@@ -16,13 +16,10 @@ export default function Feed({ url }) {
   const [fetchNext, setFetchNext] = useState(true);
 
   useEffect(() => {
-    console.log(nextPageUrl);
-    console.log(postsUrls);
-    console.log(hasNext);
-    console.log(fetchNext);
     if (!fetchNext) {
       return;
     }
+    let ignoreStaleRequest = false;
     var newPosts = [];
     fetch(nextPageUrl, { credentials: "same-origin" })
       .then((response) => {
@@ -30,21 +27,30 @@ export default function Feed({ url }) {
         return response.json();
       })
       .then((data) => {
-        newPosts = data["results"].map((result) => {
-          return result["url"];
-        });
-        if (data["next"] == "") {
-          setHasNext(false);
-          setPageUrl("");
-          setPostsUrls([...postsUrls, ...newPosts]);
-        } else {
-          setHasNext(true);
-          setPageUrl(data["next"]);
-          setPostsUrls([...postsUrls, ...newPosts]);
+        if (!ignoreStaleRequest) {
+          newPosts = data["results"].map((result) => {
+            return result["url"];
+          });
+          if (data["next"] == "") {
+            setHasNext(false);
+            setPageUrl("");
+            setPostsUrls([...postsUrls, ...newPosts]);
+          } else {
+            setHasNext(true);
+            setPageUrl(data["next"]);
+            setPostsUrls([...postsUrls, ...newPosts]);
+          }
+          setFetchNext(false);
         }
-        setFetchNext(false);
       })
       .catch((error) => console.log(error));
+
+    return () => {
+      // This is a cleanup function that runs whenever the Post component
+      // unmounts or re-renders. If a Post is about to unmount or re-render, we
+      // should avoid updating state.
+      ignoreStaleRequest = true;
+    };
   }, [fetchNext]);
 
   // Render post image and post owner
