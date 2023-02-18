@@ -1,23 +1,0 @@
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 18.224.212.217:80...
-* TCP_NODELAY set
-* Connected to ec2-18-224-212-217.us-east-2.compute.amazonaws.com (18.224.212.217) port 80 (#0)
-> GET / HTTP/1.1
-> Host: ec2-18-224-212-217.us-east-2.compute.amazonaws.com
-> User-Agent: curl/7.68.0
-> Accept: */*
-> Cookie: login=eyJ1c2VybmFtZSI6ImF3ZGVvcmlvIn0.Y_BgaQ.JD8FXForj1f3Um19Vag14AHyk9E
-> 
-* Mark bundle as not supporting multiuse
-< HTTP/1.1 200 OK
-< Server: nginx/1.18.0 (Ubuntu)
-< Date: Sat, 18 Feb 2023 05:21:56 GMT
-< Content-Type: text/html; charset=utf-8
-< Content-Length: 431
-< Connection: keep-alive
-< Vary: Cookie
-< 
-{ [431 bytes data]
-100   431  100   431    0     0   3954      0 --:--:-- --:--:-- --:--:--  3918100   431  100   431    0     0   3954      0 --:--:-- --:--:-- --:--:--  3918
-* Connection #0 to host ec2-18-224-212-217.us-east-2.compute.amazonaws.com left intact
