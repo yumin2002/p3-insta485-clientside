@@ -31,7 +31,7 @@ export default function Post({ url }) {
     setLikeid(num);
   };
   useEffect(() => {
-    console.log("useEffect")
+    console.log("useEffect");
     // Declare a boolean flag that we can use to cancel the API request.
     let ignoreStaleRequest = false;
 
@@ -67,7 +67,6 @@ export default function Post({ url }) {
           // } else {
           //   setLikeText("likes")
           // }
-
 
           lls = data["likes"]["lognameLikesThis"];
           //get likeid
@@ -106,12 +105,14 @@ export default function Post({ url }) {
   let like_url;
 
   const addLikes = (event) => {
-
     if (loglikes) {
       return;
     }
     like_url = "/api/v1/likes/?postid=".concat(postid.toString());
-    fetch("/api/v1/likes/?" + new URLSearchParams({ postid: postid }), { credentials: "same-origin", method: "POST" })
+    fetch("/api/v1/likes/?" + new URLSearchParams({ postid: postid }), {
+      credentials: "same-origin",
+      method: "POST",
+    })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         return response.json();
@@ -119,9 +120,7 @@ export default function Post({ url }) {
       .then((data) => {
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
-        if (!ignoreStaleRequest) {
-          setlikeurl(data["url"]);
-        }
+        setlikeurl(data["url"]);
       })
       .catch((error) => console.log(error));
     setNumlikes(numLikes + 1);
@@ -129,12 +128,11 @@ export default function Post({ url }) {
     setButtonText("unlike");
   };
   const deleteLikes = (event) => {
-
     like_id = likeurl.replace("/api/v1/likes/", "");
     like_id = like_id.replace("/", "");
     // console.log(Number(like_id));
     // setLikeid(Number(like_id));
-    like_url = "/api/v1/likes/".concat(like_id.toString()) + "/";
+    like_url = "/api/v1/likes/" + like_id + "/";
     fetch(like_url, {
       credentials: "same-origin",
       method: "DELETE",
@@ -145,12 +143,6 @@ export default function Post({ url }) {
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);
         // return response.json();
-      })
-      .then((data) => {
-        // If ignoreStaleRequest was set to true, we want to ignore the results of the
-        // the request. Otherwise, update the state to trigger a new render.
-        if (!ignoreStaleRequest) {
-        }
       })
       .catch((error) => console.log(error));
     setNumlikes(numLikes - 1);
@@ -202,7 +194,7 @@ export default function Post({ url }) {
     // get a url
     // var postid = postUrl.replace("/api/v1/posts/", "");
     // postid = postid.replace("/", "");
-    const searchparams = new URLSearchParams(url)
+    const searchparams = new URLSearchParams(url);
     var commentUrl = "/api/v1/comments/?postid=" + postid;
 
     let ignoreStaleRequest = false;
@@ -229,32 +221,29 @@ export default function Post({ url }) {
 
   // Render post image and post owner
   if (finished) {
-
     return (
       <div className="post">
         <a href={ownerShowUrl}>{owner}</a>
         <a href={postShowUrl}>{timeStamp}</a>
 
-        <a href={ownerShowUrl}><img src={ownerImgUrl} alt="owner_image" /></a>
+        <a href={ownerShowUrl}>
+          <img src={ownerImgUrl} alt="owner_image" />
+        </a>
 
         <img src={imgUrl} onDoubleClick={addLikes} alt="post_image" />
 
-
-
         <div className="likeButton">
-
-          <p>{numLikes} {numLikes == 1 ? " like" : " likes"}</p>
+          <p>
+            {numLikes} {numLikes == 1 ? " like" : " likes"}
+          </p>
 
           <button onClick={handleclick} className="like-unlike-button">
             {likeButtonText}
           </button>
         </div>
 
-
-
         <div>
           {comments.map((comment) => {
-
             // Return HTML for one clue
             if (comment["lognameOwnsThis"]) {
               //setuniqueid(uniqueid + 1)
@@ -262,40 +251,34 @@ export default function Post({ url }) {
                 <div key={comment["commentid"]}>
                   <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
                   <span className="comment-text">{comment["text"]}</span>
-                  <button className="delete-comment-button" onClick={handleDelete} id={comment["commentid"]}>
+                  <button
+                    className="delete-comment-button"
+                    onClick={handleDelete}
+                    id={comment["commentid"]}
+                  >
                     delete
                   </button>
                 </div>
-
               );
-
             }
             return (
               <div key={comment["commentid"]}>
                 <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
                 <span className="comment-text">{comment["text"]}</span>
-
               </div>
             );
-
           })}
           <form className="comment-form" onSubmit={handleSubmit}>
             <input type="text" />
           </form>
-        </div >
+        </div>
       </div>
-    )
-  }
-  else {
-    console.log("entered empty")
-    return (<div>
-
-    </div>);
+    );
+  } else {
+    console.log("entered empty");
+    return <div></div>;
   }
 }
-
-
-
 
 Post.propTypes = {
   url: PropTypes.string.isRequired,
