@@ -5,12 +5,13 @@ import Post from "./post";
 
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
-export default function Feed({ }) {  // url
+export default function Feed({ url }) {
+  // {url}
   //  const [pageUrl, setPageUrl] = useState(url);
   // const [postKey, setPostKey] = useState(0)
-  const postKey = 0;
+  let postKey = 0;
   // const [postsUrls, setPostsUrls] = useState(() => {
-  const [nextPageUrl, setPageUrl] = useState("/api/v1/posts/");
+  const [nextPageUrl, setPageUrl] = useState(url); // "/api/v1/posts/"
   const [postsUrls, setPostsUrls] = useState([]);
   const [hasNext, setHasNext] = useState(false);
   const [fetchNext, setFetchNext] = useState(true);
@@ -19,7 +20,7 @@ export default function Feed({ }) {  // url
 
   useEffect(() => {
     if (!fetchNext) {
-      return;
+      return () => {};
     }
     let ignoreStaleRequest = false;
     let newPosts = [];
@@ -30,16 +31,15 @@ export default function Feed({ }) {  // url
       })
       .then((data) => {
         if (!ignoreStaleRequest) {
-          newPosts = data["results"].map((result) => {
-            return result["url"];
-          });
-          if (data["next"] == "") {
+          console.log(typeof data);
+          newPosts = data.results.map((result) => result.url);
+          if (data.next === "") {
             setHasNext(false);
             setPageUrl("");
             setPostsUrls([...postsUrls, ...newPosts]);
           } else {
             setHasNext(true);
-            setPageUrl(data["next"]);
+            setPageUrl(data.next);
             setPostsUrls([...postsUrls, ...newPosts]);
           }
           setFetchNext(false);
@@ -58,7 +58,7 @@ export default function Feed({ }) {  // url
   // Render post image and post owner
   return (
     <InfiniteScroll
-      dataLength={postsUrls.length} //This is important field to render the next data
+      dataLength={postsUrls.length} // This is important field to render the next data
       next={() => {
         console.log("CALL NEXT!!!!");
         setFetchNext(true);
@@ -73,7 +73,8 @@ export default function Feed({ }) {  // url
       }
     >
       {postsUrls.map((postUrl) => {
-        postKey = postKey + 1;
+        // console.log()
+        postKey += 1;
         return <Post url={postUrl} key={postKey} />;
       })}
     </InfiniteScroll>

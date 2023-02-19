@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import Comments from "./comments";
-import UpdateLikes from "./likes";
+// import Comments from "./comments";
+// import UpdateLikes from "./likes";
 
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
@@ -20,14 +20,15 @@ export default function Post({ url }) {
   const [likeid, setLikeid] = useState(0);
   const [postShowUrl, setPostShowUrl] = useState("");
   const [ownerShowUrl, setOwnerShowUrl] = useState("");
-  const [likeText, setLikeText] = useState("");
+  // const [likeText, setLikeText] = useState("");
   const [finished, setfinished] = useState(false);
   const [finishedlike, setLikeFinish] = useState(false);
   const [initLike, setInitlike] = useState(true);
-  //var finished = false;
-  var like_id;
-  var lls = false;
-  var like = 0;
+  // var finished = false;
+  let likeId = likeid;
+  let lls = false;
+  // var i = 0;
+  // let like = 0;
 
   const doSetLikeid = (num) => {
     setLikeid(num);
@@ -48,33 +49,33 @@ export default function Post({ url }) {
         // the request. Otherwise, update the state to trigger a new render.
         if (!ignoreStaleRequest) {
           const commentLists = [];
-          for (var i = 0, size = data["comments"].length; i < size; i++) {
-            commentLists.push(data["comments"][i]["text"]);
+          for (let i = 0, size = data.comments.length; i < size; i += 1) {
+            commentLists.push(data.comments[i].text);
           }
-          setComments(data["comments"]);
+          setComments(data.comments);
           //   print(data["comments"]);
-          setImgUrl(data["imgUrl"]);
-          setOwner(data["owner"]);
-          setOwnerImg(data["ownerImgUrl"]);
-          setlikeurl(data["likes"]["url"]);
-          setNumlikes(data["likes"]["numLikes"]);
-          setloglikes(data["likes"]["lognameLikesThis"]);
-          setTime(moment.utc(data["created"]).fromNow());
-          setPostUrl(data["url"]);
-          setPostShowUrl(data["postShowUrl"]);
-          setOwnerShowUrl(data["ownerShowUrl"]);
-          like = data["likes"]["numLikes"];
+          setImgUrl(data.imgUrl);
+          setOwner(data.owner);
+          setOwnerImg(data.ownerImgUrl);
+          setlikeurl(data.likes.url);
+          setNumlikes(data.likes.numLikes);
+          setloglikes(data.likes.lognameLikesThis);
+          setTime(moment.utc(data.created).fromNow());
+          setPostUrl(data.url);
+          setPostShowUrl(data.postShowUrl);
+          setOwnerShowUrl(data.ownerShowUrl);
+          // like = data.get("likes").get("numLikes");
           // if (like === 1) {
           //   setLikeText("like");
           // } else {
           //   setLikeText("likes")
           // }
 
-          lls = data["likes"]["lognameLikesThis"];
-          //get likeid
-          like_id = likeurl.replace("/api/v1/likes/", "");
-          like_id = like_id.replace("/", "");
-          doSetLikeid(Number(like_id));
+          lls = data.likes.lognameLikesThis;
+          // get likeid
+          likeId = likeurl.replace("/api/v1/likes/", "");
+          likeId = likeId.replace("/", "");
+          doSetLikeid(Number(likeId));
           if (lls) {
             setButtonText("unlike");
           } else {
@@ -97,21 +98,24 @@ export default function Post({ url }) {
     };
   }, [url]);
 
-  var postid = postUrl.replace("/api/v1/posts/", "");
+  let postid = postUrl.replace("/api/v1/posts/", "");
   postid = postid.replace("/", "");
-  //post_url = "/api/v1/comments/?postid=" + postid;
-  //if not liked, like url will be null
+  // post_url = "/api/v1/comments/?postid=" + postid;
+  // if not liked, like url will be null
 
   //   console.log(postUrl);
   //   console.log(postid);
-  let like_url;
+  let likeUrl;
 
-  const addLikes = (event) => {
+  const addLikes = () => {
+    // event
     if (loglikes) {
       return;
     }
-    like_url = "/api/v1/likes/?postid=".concat(postid.toString());
-    fetch("/api/v1/likes/?" + new URLSearchParams({ postid: postid }), {
+    likeUrl = "/api/v1/likes/?postid=".concat(postid.toString());
+
+    fetch(`/api/v1/likes/?postid=${postid}`, {
+      // "/api/v1/likes/?" + new URLSearchParams({ postid: postid }), {
       credentials: "same-origin",
       method: "POST",
     })
@@ -122,7 +126,7 @@ export default function Post({ url }) {
       .then((data) => {
         // If ignoreStaleRequest was set to true, we want to ignore the results of the
         // the request. Otherwise, update the state to trigger a new render.
-        setlikeurl(data["url"]);
+        setlikeurl(data.url);
         setLikeFinish(true);
       })
       .catch((error) => console.log(error));
@@ -130,22 +134,23 @@ export default function Post({ url }) {
     setloglikes(!loglikes);
     setButtonText("unlike");
   };
-  const deleteLikes = (event) => {
+  const deleteLikes = () => {
     if (!finishedlike && !initLike) {
       console.log("entered return for delete");
       return;
     }
-    else {
-      console.log("elseee");
-      setLikeFinish(false);
-      setInitlike(false);
-    }
-    like_id = likeurl.replace("/api/v1/likes/", "");
-    like_id = like_id.replace("/", "");
+    // else {
+    console.log("elseee");
+    setLikeFinish(false);
+    setInitlike(false);
+    // }
+    likeId = likeurl.replace("/api/v1/likes/", "");
+    likeId = likeId.replace("/", "");
     // console.log(Number(like_id));
     // setLikeid(Number(like_id));
-    like_url = "/api/v1/likes/" + like_id + "/";
-    fetch(like_url, {
+    // likeUrl = "/api/v1/likes/" + likeId + "/";
+    likeUrl = `/api/v1/likes/${likeId}/`;
+    fetch(likeUrl, {
       credentials: "same-origin",
       method: "DELETE",
       headers: {
@@ -171,11 +176,12 @@ export default function Post({ url }) {
   };
 
   function handleDelete(event) {
-    var id_to_delete = event.target.id;
-    var url_delete = "/api/v1/comments/" + id_to_delete + "/";
+    const idToDelete = event.target.id;
+    const urlDelete = `/api/v1/comments/${idToDelete}/`;
     event.preventDefault();
     let ignoreStaleRequest = false;
-    fetch(url_delete, {
+    ignoreStaleRequest = false;
+    fetch(urlDelete, {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
@@ -188,11 +194,9 @@ export default function Post({ url }) {
       .catch((error) => console.log(error));
 
     if (!ignoreStaleRequest) {
-      var deleteComment = comments.map((comment) => {
-        return comment;
-      });
-      for (let i = 0; i < deleteComment.length; i++) {
-        if (deleteComment[i]["commentid"] == 1.0 * id_to_delete) {
+      const deleteComment = comments.map((comment) => comment);
+      for (let i = 0; i < deleteComment.length; i += 1) {
+        if (deleteComment[i].commentid === 1.0 * idToDelete) {
           deleteComment.splice(i, 1);
         }
       }
@@ -206,11 +210,13 @@ export default function Post({ url }) {
     // get a url
     // var postid = postUrl.replace("/api/v1/posts/", "");
     // postid = postid.replace("/", "");
-    const searchparams = new URLSearchParams(url);
-    var commentUrl = "/api/v1/comments/?postid=" + postid;
+    // const searchparams = new URLSearchParams(url);
+    // var commentUrl = "/api/v1/comments/?postid=" + postid;
 
     let ignoreStaleRequest = false;
-    fetch("/api/v1/comments/?" + new URLSearchParams({ postid: postid }), {
+    ignoreStaleRequest = false;
+    fetch(`/api/v1/comments/?postid=${postid}`, {
+      // "/api/v1/comments/?" + new URLSearchParams({ postid: postid }), {
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
@@ -247,10 +253,14 @@ export default function Post({ url }) {
 
         <div className="likeButton">
           <p>
-            {numLikes} {numLikes == 1 ? " like" : " likes"}
+            {numLikes} {numLikes === 1 ? " like" : " likes"}
           </p>
 
-          <button onClick={handleclick} className="like-unlike-button">
+          <button
+            type="button"
+            onClick={handleclick}
+            className="like-unlike-button"
+          >
             {likeButtonText}
           </button>
         </div>
@@ -258,16 +268,17 @@ export default function Post({ url }) {
         <div>
           {comments.map((comment) => {
             // Return HTML for one clue
-            if (comment["lognameOwnsThis"]) {
-              //setuniqueid(uniqueid + 1)
+            if (comment.lognameOwnsThis) {
+              // setuniqueid(uniqueid + 1)
               return (
-                <div key={comment["commentid"]}>
-                  <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
-                  <span className="comment-text">{comment["text"]}</span>
+                <div key={comment.commentid}>
+                  <a href={comment.ownerShowUrl}> {comment.owner}</a>
+                  <span className="comment-text">{comment.text}</span>
                   <button
+                    type="button"
                     className="delete-comment-button"
                     onClick={handleDelete}
-                    id={comment["commentid"]}
+                    id={comment.commentid}
                   >
                     delete
                   </button>
@@ -275,9 +286,9 @@ export default function Post({ url }) {
               );
             }
             return (
-              <div key={comment["commentid"]}>
-                <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
-                <span className="comment-text">{comment["text"]}</span>
+              <div key={comment.commentid}>
+                <a href={comment.ownerShowUrl}> {comment.owner}</a>
+                <span className="comment-text">{comment.text}</span>
               </div>
             );
           })}
@@ -287,9 +298,10 @@ export default function Post({ url }) {
         </div>
       </div>
     );
-  } else {
+  }
+  if (!finished) {
     console.log("entered empty");
-    return <div></div>;
+    return <div />;
   }
 }
 
