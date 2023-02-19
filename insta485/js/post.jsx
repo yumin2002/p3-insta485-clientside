@@ -231,7 +231,7 @@ export default function Post({ url }) {
       .then((data) => {
         if (!ignoreStaleRequest) {
           setComments([...comments, ...[data]]);
-          event.target[0].value = "";
+          // event.target[0].value = "";
         }
       })
       .catch((error) => console.log(error));
