@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Post from "./post";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Post from "./post";
 
 // The parameter of this function is an object with a string called url inside it.
 // url is a prop for the Post component.
-export default function Feed({ url }) {
+export default function Feed({ }) {  // url
   //  const [pageUrl, setPageUrl] = useState(url);
   // const [postKey, setPostKey] = useState(0)
-  var postKey = 0;
+  const postKey = 0;
   // const [postsUrls, setPostsUrls] = useState(() => {
   const [nextPageUrl, setPageUrl] = useState("/api/v1/posts/");
   const [postsUrls, setPostsUrls] = useState([]);
   const [hasNext, setHasNext] = useState(false);
   const [fetchNext, setFetchNext] = useState(true);
 
+  // var newPosts;
+
   useEffect(() => {
     if (!fetchNext) {
       return;
     }
     let ignoreStaleRequest = false;
-    var newPosts = [];
+    let newPosts = [];
     fetch(nextPageUrl, { credentials: "same-origin" })
       .then((response) => {
         if (!response.ok) throw Error(response.statusText);

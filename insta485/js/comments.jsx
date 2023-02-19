@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React from "react";  // , { useState, useEffect } 
 import PropTypes from "prop-types";
+
 export default function Comments({ handleSubmit, handleDelete, comments }) {
   return (
     <div>
       {comments.map((comment) => {
         // Return HTML for one clue
-        if (comment["lognameOwnsThis"]) {
+        if (comment.get("lognameOwnsThis")) {
           //setuniqueid(uniqueid + 1)
           return (
-            <div key={comment["commentid"]}>
-              <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
-              <span className="comment-text">{comment["text"]}</span>
+            <div key={comment.get("commentid")}>
+              <a href={comment.get("ownerShowUrl")}> {comment.get("owner")}</a>
+              <span className="comment-text">{comment.get("text")}</span>
               <button
+                type="button"
                 className="delete-comment-button"
                 onClick={handleDelete}
-                id={comment["commentid"]}
+                id={comment.get("commentid")}
               >
                 delete
               </button>
@@ -22,9 +24,9 @@ export default function Comments({ handleSubmit, handleDelete, comments }) {
           );
         }
         return (
-          <div key={comment["commentid"]}>
-            <a href={comment["ownerShowUrl"]}> {comment["owner"]}</a>
-            <span className="comment-text">{comment["text"]}</span>
+          <div key={comment.get("commentid")}>
+            <a href={comment.get("ownerShowUrl")}> {comment.get("owner")}</a>
+            <span className="comment-text">{comment.get("text")}</span>
           </div>
         );
       })}

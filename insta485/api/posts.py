@@ -256,12 +256,13 @@ def delete_comment(commentid):
 
     auth = insta485.views.accounts.basic_auth()
     connection = insta485.model.get_db()
-    if 'username' not in flask.session and not auth:
-        flask.abort(403)
-    if flask.request.authorization is not None:
-        logname = flask.request.authorization["username"]
-    else:
-        logname = flask.session["username"]
+    # if 'username' not in flask.session and not auth:
+    #     flask.abort(403)
+    # if flask.request.authorization is not None:
+    #     logname = flask.request.authorization["username"]
+    # else:
+    #     logname = flask.session["username"]
+    logname = assign_logname(auth)
 
     cur = connection.execute(
         "SELECT owner, commentid FROM comments WHERE commentid == ? ",
@@ -282,3 +283,12 @@ def delete_comment(commentid):
     )
 
     return "", 204
+
+
+def assign_logname(auth):
+    """assign_logname."""
+    if 'username' not in flask.session and not auth:
+        flask.abort(403)
+    if flask.request.authorization is not None:
+        return flask.request.authorization["username"]
+    return flask.session["username"]
